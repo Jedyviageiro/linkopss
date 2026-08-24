@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -61,6 +62,19 @@ public class GlobalExceptionHandler {
                 HttpStatus.CONFLICT,
                 "Conflito",
                 messageOrDefault(exception, "A operação solicitada está em conflito com o estado atual."),
+                request
+        );
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiError> handleAuthentication(
+            AuthenticationException exception,
+            HttpServletRequest request
+    ) {
+        return buildError(
+                HttpStatus.UNAUTHORIZED,
+                "Não autenticado",
+                "Credenciais ou token inválidos.",
                 request
         );
     }
