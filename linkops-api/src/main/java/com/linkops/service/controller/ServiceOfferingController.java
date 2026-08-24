@@ -19,9 +19,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.UUID;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping
@@ -66,8 +68,17 @@ public class ServiceOfferingController {
     }
 
     @GetMapping("/services")
-    public ResponseEntity<Page<ServiceOfferingResponse>> list(Pageable pageable) {
-        return ResponseEntity.ok(serviceOfferingService.listPublic(pageable));
+    public ResponseEntity<Page<ServiceOfferingResponse>> list(
+            @RequestParam(required = false, name = "q") String query,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(serviceOfferingService.searchPublic(
+                query, category, city, minPrice, maxPrice, pageable
+        ));
     }
 
     @GetMapping("/services/{id}")

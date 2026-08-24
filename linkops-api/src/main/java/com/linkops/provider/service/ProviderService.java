@@ -14,11 +14,17 @@ import com.linkops.user.domain.UserRole;
 import com.linkops.user.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.Normalizer;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -96,8 +102,19 @@ public class ProviderService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ProviderResponse> listProviders(Pageable pageable) {
-        return providerProfileRepository.findAllByStatus(ProviderStatus.ACTIVE, pageable)
+    public Page<ProviderResponse> searchProviders(
+            String query,
+            String category,
+            String city,
+            Pageable pageable
+    ) {
+        return providerProfileRepository.searchPublic(
+                        ProviderStatus.ACTIVE,
+                        likePatternOrNull(query),
+                        category == null || category.isBlank() ? null : categorySlug(category),
+                        likePatternOrNull(city),
+                        providerPageable(pageable)
+                )
                 .map(ProviderResponse::from);
     }
 
@@ -115,5 +132,49 @@ public class ProviderService {
         if ((latitude == null) != (longitude == null)) {
             throw new BadRequestException("Latitude e longitude devem ser informadas em conjunto.");
         }
+    }
+
+    private Pageable providerPageable(Pageable pageable) {
+        Map<String, String> allowed = Map.of(
+                "createdAt", "createdAt",
+                "rating", "averageRating",
+                "completedJobs", "completedJobs",
+                "city", "city",
+                "name", "user.firstName"
+        );
+        List<Sort.Order> orders = pageable.getSort().stream()
+                .map(order -> {
+                    String property = allowed.get(order.getProperty());
+                    if (property == null) {
+                        throw new BadRequestException(
+                                "Ordenação inválida. Use createdAt, rating, completedJobs, city ou name."
+                        );
+                    }
+                    return new Sort.Order(order.getDirection(), property);
+                })
+                .toList();
+        Sort sort = orders.isEmpty()
+                ? Sort.by(Sort.Order.desc("averageRating"), Sort.Order.desc("completedJobs"))
+                : Sort.by(orders);
+        return PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+    }
+
+    private String categorySlug(String value) {
+        String slug = Normalizer.normalize(value.trim(), Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9]+", "-")
+                .replaceAll("(^-|-$)", "");
+        return Map.of(
+                "canalizacao", "canalizador",
+                "eletricidade", "electricista",
+                "climatizacao", "ar-condicionado"
+        ).getOrDefault(slug, slug);
+    }
+
+    private String likePatternOrNull(String value) {
+        return value == null || value.isBlank()
+                ? null
+                : "%" + value.trim().toLowerCase(Locale.ROOT) + "%";
     }
 }

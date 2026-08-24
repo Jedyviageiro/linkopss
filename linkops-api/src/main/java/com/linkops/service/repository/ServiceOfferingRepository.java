@@ -6,13 +6,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ServiceOfferingRepository extends JpaRepository<ServiceOffering, UUID> {
+public interface ServiceOfferingRepository extends
+        JpaRepository<ServiceOffering, UUID>,
+        JpaSpecificationExecutor<ServiceOffering> {
 
     @EntityGraph(attributePaths = {"provider", "provider.user", "category"})
     @Query("""
@@ -29,6 +33,10 @@ public interface ServiceOfferingRepository extends JpaRepository<ServiceOffering
 
     @EntityGraph(attributePaths = {"provider", "provider.user", "category"})
     Optional<ServiceOffering> findByIdAndProvider_User_Id(UUID id, UUID userId);
+
+    @Override
+    @EntityGraph(attributePaths = {"provider", "provider.user", "category"})
+    Page<ServiceOffering> findAll(Specification<ServiceOffering> specification, Pageable pageable);
 
     @EntityGraph(attributePaths = {"provider", "provider.user", "category"})
     @Query("""
