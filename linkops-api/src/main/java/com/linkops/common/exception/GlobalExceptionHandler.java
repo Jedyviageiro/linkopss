@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -89,6 +90,22 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED,
                 "Não autenticado",
                 "Credenciais ou token inválidos.",
+                request
+        );
+    }
+
+    @ExceptionHandler(ServiceUnavailableException.class)
+    public ResponseEntity<ApiError> handleServiceUnavailable(
+            ServiceUnavailableException exception,
+            HttpServletRequest request
+    ) {
+        return buildError(
+                HttpStatus.SERVICE_UNAVAILABLE,
+                "Serviço indisponível",
+                messageOrDefault(
+                        exception,
+                        "O serviço está temporariamente indisponível."
+                ),
                 request
         );
     }
@@ -195,6 +212,19 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNSUPPORTED_MEDIA_TYPE,
                 "Formato não suportado",
                 "O formato dos dados enviados não é suportado.",
+                request
+        );
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiError> handleMaxUploadSize(
+            MaxUploadSizeExceededException exception,
+            HttpServletRequest request
+    ) {
+        return buildError(
+                HttpStatus.PAYLOAD_TOO_LARGE,
+                "Ficheiro demasiado grande",
+                "A imagem deve ter no máximo 5 MB.",
                 request
         );
     }

@@ -106,6 +106,10 @@ public class ProviderProfile extends BaseEntity {
         this.completedJobs++;
     }
 
+    public void updateProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = normalizeOptional(profileImageUrl);
+    }
+
     private static String normalizeRequired(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("A cidade é obrigatória.");

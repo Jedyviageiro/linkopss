@@ -52,7 +52,8 @@ public class SecurityConfig {
                                 "/providers",
                                 "/providers/{id}",
                                 "/providers/{providerId}/services",
-                                "/providers/{providerId}/reviews"
+                                "/providers/{providerId}/reviews",
+                                "/media/services/{serviceId}/images"
                         ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/provider/**", "/providers/**")

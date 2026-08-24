@@ -2,6 +2,7 @@ package com.linkops.service.dto;
 
 import com.linkops.service.domain.PriceType;
 import com.linkops.service.domain.ServiceOffering;
+import com.linkops.location.dto.LocationResponse;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -14,6 +15,7 @@ public record ServiceOfferingResponse(
         String city,
         BigDecimal latitude,
         BigDecimal longitude,
+        LocationResponse location,
         UUID categoryId,
         String categoryName,
         String title,
@@ -33,6 +35,11 @@ public record ServiceOfferingResponse(
                 offering.getProvider().getCity(),
                 offering.getProvider().getLatitude(),
                 offering.getProvider().getLongitude(),
+                LocationResponse.of(
+                        offering.getProvider().getCity(),
+                        offering.getProvider().getLatitude(),
+                        offering.getProvider().getLongitude()
+                ),
                 offering.getCategory().getId(),
                 offering.getCategory().getName(),
                 offering.getTitle(),

@@ -20,6 +20,11 @@ spring:
         default-page-size: 20
         max-page-size: 100
 
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+
 server:
   port: ${SERVER_PORT:8081}
 
@@ -33,6 +38,13 @@ management:
         include: health,info
 
 linkops:
+  media:
+    max-file-size: 5242880
+    max-images-per-service: 8
+    cloudinary:
+      cloud-name: ${CLOUDINARY_CLOUD_NAME:}
+      api-key: ${CLOUDINARY_API_KEY:}
+      api-secret: ${CLOUDINARY_API_SECRET:}
   security:
     jwt:
       secret: ${JWT_SECRET:linkops-development-secret-change-me-32-bytes}

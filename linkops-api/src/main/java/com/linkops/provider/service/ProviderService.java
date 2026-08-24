@@ -3,6 +3,8 @@ package com.linkops.provider.service;
 import com.linkops.common.exception.BadRequestException;
 import com.linkops.common.exception.ConflictException;
 import com.linkops.common.exception.ResourceNotFoundException;
+import com.linkops.location.dto.LocationResponse;
+import com.linkops.location.service.LocationService;
 import com.linkops.provider.domain.ProviderProfile;
 import com.linkops.provider.domain.ProviderStatus;
 import com.linkops.provider.dto.CreateProviderProfileRequest;
@@ -32,13 +34,16 @@ public class ProviderService {
 
     private final ProviderProfileRepository providerProfileRepository;
     private final UserRepository userRepository;
+    private final LocationService locationService;
 
     public ProviderService(
             ProviderProfileRepository providerProfileRepository,
-            UserRepository userRepository
+            UserRepository userRepository,
+            LocationService locationService
     ) {
         this.providerProfileRepository = providerProfileRepository;
         this.userRepository = userRepository;
+        this.locationService = locationService;
     }
 
     @Transactional
@@ -53,15 +58,17 @@ public class ProviderService {
         if (providerProfileRepository.existsByUserId(userId)) {
             throw new ConflictException("Este utilizador já possui um perfil profissional.");
         }
-        validateCoordinatePair(request.latitude(), request.longitude());
+        LocationResponse location = locationService.validateAndNormalize(
+                request.city(), request.latitude(), request.longitude()
+        );
 
         ProviderProfile profile = new ProviderProfile(
                 user,
                 request.bio(),
                 request.profileImageUrl(),
-                request.city(),
-                request.latitude(),
-                request.longitude()
+                location.city(),
+                location.latitude(),
+                location.longitude()
         );
 
         try {
@@ -81,14 +88,23 @@ public class ProviderService {
             UUID userId,
             UpdateProviderProfileRequest request
     ) {
-        validateCoordinatePair(request.latitude(), request.longitude());
         ProviderProfile profile = findByUserId(userId);
+        String city = request.city() == null ? profile.getCity() : request.city();
+        BigDecimal latitude = request.latitude() == null
+                ? profile.getLatitude()
+                : request.latitude();
+        BigDecimal longitude = request.longitude() == null
+                ? profile.getLongitude()
+                : request.longitude();
+        LocationResponse location = locationService.validateAndNormalize(
+                city, latitude, longitude
+        );
         profile.update(
                 request.bio(),
                 request.profileImageUrl(),
-                request.city(),
-                request.latitude(),
-                request.longitude()
+                request.city() == null ? null : location.city(),
+                request.latitude() == null ? null : location.latitude(),
+                request.longitude() == null ? null : location.longitude()
         );
         return ProviderResponse.from(profile);
     }
@@ -126,12 +142,6 @@ public class ProviderService {
     private ProviderProfile findByUserId(UUID userId) {
         return providerProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Perfil profissional não encontrado."));
-    }
-
-    private void validateCoordinatePair(BigDecimal latitude, BigDecimal longitude) {
-        if ((latitude == null) != (longitude == null)) {
-            throw new BadRequestException("Latitude e longitude devem ser informadas em conjunto.");
-        }
     }
 
     private Pageable providerPageable(Pageable pageable) {
