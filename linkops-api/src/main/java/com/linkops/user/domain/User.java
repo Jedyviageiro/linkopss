@@ -3,6 +3,8 @@ package com.linkops.user.domain;
 import com.linkops.common.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,9 +31,54 @@ public class User extends BaseEntity {
     @Column(name = "password_hash", nullable = false, length = 255)
     private String passwordHash;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
-    private String role;
+    private UserRole role;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
-    private String status;
+    private UserStatus status;
+
+    public User(
+            String firstName,
+            String lastName,
+            String email,
+            String phone,
+            String passwordHash,
+            UserRole role
+    ) {
+        this.firstName = normalizeRequired(firstName);
+        this.lastName = normalizeRequired(lastName);
+        this.email = normalizeRequired(email).toLowerCase(java.util.Locale.ROOT);
+        this.phone = normalizeOptional(phone);
+        this.passwordHash = normalizeRequired(passwordHash);
+        if (role == null) {
+            throw new IllegalArgumentException("O perfil do utilizador é obrigatório.");
+        }
+        this.role = role;
+        this.status = UserStatus.ACTIVE;
+    }
+
+    public void updateProfile(String firstName, String lastName, String phone) {
+        if (firstName != null) {
+            this.firstName = normalizeRequired(firstName);
+        }
+        if (lastName != null) {
+            this.lastName = normalizeRequired(lastName);
+        }
+        if (phone != null) {
+            this.phone = normalizeOptional(phone);
+        }
+    }
+
+    private static String normalizeRequired(String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("O valor informado é obrigatório.");
+        }
+        return value.trim();
+    }
+
+    private static String normalizeOptional(String value) {
+        return value == null || value.isBlank() ? null : value.trim();
+    }
 }
