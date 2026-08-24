@@ -6,6 +6,7 @@ import com.linkops.booking.repository.BookingRepository;
 import com.linkops.common.exception.BadRequestException;
 import com.linkops.common.exception.ConflictException;
 import com.linkops.common.exception.ResourceNotFoundException;
+import com.linkops.notification.service.NotificationService;
 import com.linkops.provider.domain.ProviderProfile;
 import com.linkops.provider.domain.ProviderStatus;
 import com.linkops.provider.repository.ProviderProfileRepository;
@@ -31,15 +32,18 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final BookingRepository bookingRepository;
     private final ProviderProfileRepository providerProfileRepository;
+    private final NotificationService notificationService;
 
     public ReviewService(
             ReviewRepository reviewRepository,
             BookingRepository bookingRepository,
-            ProviderProfileRepository providerProfileRepository
+            ProviderProfileRepository providerProfileRepository,
+            NotificationService notificationService
     ) {
         this.reviewRepository = reviewRepository;
         this.bookingRepository = bookingRepository;
         this.providerProfileRepository = providerProfileRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -70,6 +74,7 @@ public class ReviewService {
         }
 
         updateProviderAverage(booking.getProvider());
+        notificationService.reviewReceived(review);
         return ReviewResponse.from(review);
     }
 

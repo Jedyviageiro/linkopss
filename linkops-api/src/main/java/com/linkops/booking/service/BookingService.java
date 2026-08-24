@@ -6,6 +6,7 @@ import com.linkops.booking.dto.CreateBookingRequest;
 import com.linkops.booking.repository.BookingRepository;
 import com.linkops.common.exception.BadRequestException;
 import com.linkops.common.exception.ResourceNotFoundException;
+import com.linkops.notification.service.NotificationService;
 import com.linkops.provider.domain.ProviderStatus;
 import com.linkops.security.AuthenticatedUser;
 import com.linkops.service.domain.ServiceOffering;
@@ -30,15 +31,18 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final UserRepository userRepository;
     private final ServiceOfferingRepository serviceOfferingRepository;
+    private final NotificationService notificationService;
 
     public BookingService(
             BookingRepository bookingRepository,
             UserRepository userRepository,
-            ServiceOfferingRepository serviceOfferingRepository
+            ServiceOfferingRepository serviceOfferingRepository,
+            NotificationService notificationService
     ) {
         this.bookingRepository = bookingRepository;
         this.userRepository = userRepository;
         this.serviceOfferingRepository = serviceOfferingRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -62,7 +66,9 @@ public class BookingService {
                 request.notes(),
                 request.paymentMethod()
         );
-        return BookingResponse.from(bookingRepository.save(booking));
+        bookingRepository.save(booking);
+        notificationService.bookingCreated(booking);
+        return BookingResponse.from(booking);
     }
 
     @Transactional(readOnly = true)
@@ -87,6 +93,7 @@ public class BookingService {
     public BookingResponse accept(UUID bookingId, UUID providerUserId) {
         Booking booking = findProviderBooking(bookingId, providerUserId);
         booking.accept();
+        notificationService.bookingAccepted(booking);
         return BookingResponse.from(booking);
     }
 
@@ -94,6 +101,7 @@ public class BookingService {
     public BookingResponse reject(UUID bookingId, UUID providerUserId) {
         Booking booking = findProviderBooking(bookingId, providerUserId);
         booking.reject();
+        notificationService.bookingRejected(booking);
         return BookingResponse.from(booking);
     }
 
@@ -109,6 +117,7 @@ public class BookingService {
         Booking booking = findProviderBooking(bookingId, providerUserId);
         booking.complete();
         booking.getProvider().recordCompletedJob();
+        notificationService.bookingCompleted(booking);
         return BookingResponse.from(booking);
     }
 
@@ -119,6 +128,7 @@ public class BookingService {
             throw notFound();
         }
         booking.cancelByClient();
+        notificationService.bookingCancelled(booking);
         return BookingResponse.from(booking);
     }
 

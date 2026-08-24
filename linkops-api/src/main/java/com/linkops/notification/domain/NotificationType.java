@@ -1,0 +1,10 @@
+package com.linkops.notification.domain;
+
+public enum NotificationType {
+    BOOKING_CREATED,
+    BOOKING_ACCEPTED,
+    BOOKING_REJECTED,
+    BOOKING_CANCELLED,
+    BOOKING_COMPLETED,
+    REVIEW_RECEIVED
+}
