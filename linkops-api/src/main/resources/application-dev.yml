@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5434/linkops}
+    username: ${DATABASE_USERNAME:linkops}
+    password: ${DATABASE_PASSWORD:linkops}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+    properties:
+      hibernate:
+        format_sql: true
+
+    show-sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration

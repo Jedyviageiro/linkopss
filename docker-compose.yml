@@ -21,4 +21,3 @@ services:
 
 volumes:
   linkops_postgres_data:
-    name: linkops_linkops_postgres_data
