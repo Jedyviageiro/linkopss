@@ -43,7 +43,16 @@ public class SecurityConfig {
                                 "/actuator/info"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/providers/me").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/providers", "/providers/{id}").permitAll()
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/categories",
+                                "/categories/{id}",
+                                "/services",
+                                "/services/{id}",
+                                "/providers",
+                                "/providers/{id}",
+                                "/providers/{providerId}/services"
+                        ).permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/provider/**", "/providers/**")
                         .hasAnyRole("PROVIDER", "ADMIN")
