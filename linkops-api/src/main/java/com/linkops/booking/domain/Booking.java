@@ -3,6 +3,8 @@ package com.linkops.booking.domain;
 import com.linkops.common.domain.BaseEntity;
 import com.linkops.common.exception.ConflictException;
 import com.linkops.provider.domain.ProviderProfile;
+import com.linkops.payment.domain.PaymentMethod;
+import com.linkops.payment.domain.PaymentStatus;
 import com.linkops.service.domain.ServiceOffering;
 import com.linkops.user.domain.User;
 import jakarta.persistence.Column;
@@ -51,6 +53,14 @@ public class Booking extends BaseEntity {
     @Column(nullable = false, length = 30)
     private BookingStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method", nullable = false, length = 20)
+    private PaymentMethod paymentMethod;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status", nullable = false, length = 30)
+    private PaymentStatus paymentStatus;
+
     @Version
     @Column(nullable = false)
     private long version;
@@ -60,7 +70,8 @@ public class Booking extends BaseEntity {
             ServiceOffering serviceOffering,
             Instant scheduledAt,
             String address,
-            String notes
+            String notes,
+            PaymentMethod paymentMethod
     ) {
         this.client = client;
         this.serviceOffering = serviceOffering;
@@ -69,6 +80,11 @@ public class Booking extends BaseEntity {
         this.address = normalizeRequired(address);
         this.notes = normalizeOptional(notes);
         this.status = BookingStatus.PENDING;
+        if (paymentMethod == null) {
+            throw new IllegalArgumentException("O método de pagamento é obrigatório.");
+        }
+        this.paymentMethod = paymentMethod;
+        this.paymentStatus = PaymentStatus.PENDING;
     }
 
     public void accept() {
@@ -98,6 +114,32 @@ public class Booking extends BaseEntity {
             );
         }
         status = BookingStatus.CANCELLED;
+    }
+
+    public void markPaymentAsPaid() {
+        requirePaymentCanBeRegistered();
+        if (paymentStatus == PaymentStatus.PAID) {
+            return;
+        }
+        paymentStatus = PaymentStatus.PAID;
+    }
+
+    public void markPaymentAsNotConfirmed() {
+        requirePaymentCanBeRegistered();
+        if (paymentStatus == PaymentStatus.PAID) {
+            throw new ConflictException("Um pagamento confirmado não pode ser revertido.");
+        }
+        paymentStatus = PaymentStatus.NOT_CONFIRMED;
+    }
+
+    private void requirePaymentCanBeRegistered() {
+        if (status == BookingStatus.PENDING
+                || status == BookingStatus.REJECTED
+                || status == BookingStatus.CANCELLED) {
+            throw new ConflictException(
+                    "O pagamento não pode ser registado no estado atual do pedido."
+            );
+        }
     }
 
     private void requireStatus(BookingStatus expected, String message) {

@@ -226,7 +226,8 @@ class SearchBookingFlowTests {
                                   "serviceOfferingId": "%s",
                                   "scheduledAt": "%s",
                                   "address": "Av. Julius Nyerere, Maputo",
-                                  "notes": "Contactar antes da visita"
+                                  "notes": "Contactar antes da visita",
+                                  "paymentMethod": "MPESA"
                                 }
                                 """.formatted(serviceId, scheduledAt)))
                 .andExpect(status().isCreated())

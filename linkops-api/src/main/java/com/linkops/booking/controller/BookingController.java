@@ -101,4 +101,24 @@ public class BookingController {
     ) {
         return ResponseEntity.ok(bookingService.cancel(id, user.id()));
     }
+
+    @PatchMapping("/{id}/payment/paid")
+    @PreAuthorize("hasRole('PROVIDER')")
+    public ResponseEntity<BookingResponse> markPaymentAsPaid(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal AuthenticatedUser user
+    ) {
+        return ResponseEntity.ok(bookingService.markPaymentAsPaid(id, user.id()));
+    }
+
+    @PatchMapping("/{id}/payment/not-confirmed")
+    @PreAuthorize("hasRole('PROVIDER')")
+    public ResponseEntity<BookingResponse> markPaymentAsNotConfirmed(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal AuthenticatedUser user
+    ) {
+        return ResponseEntity.ok(
+                bookingService.markPaymentAsNotConfirmed(id, user.id())
+        );
+    }
 }

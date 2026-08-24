@@ -98,6 +98,14 @@ public class ProviderProfile extends BaseEntity {
         }
     }
 
+    public void updateAverageRating(BigDecimal averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public void recordCompletedJob() {
+        this.completedJobs++;
+    }
+
     private static String normalizeRequired(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("A cidade é obrigatória.");

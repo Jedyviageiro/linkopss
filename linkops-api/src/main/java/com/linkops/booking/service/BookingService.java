@@ -59,7 +59,8 @@ public class BookingService {
                 offering,
                 request.scheduledAt(),
                 request.address(),
-                request.notes()
+                request.notes(),
+                request.paymentMethod()
         );
         return BookingResponse.from(bookingRepository.save(booking));
     }
@@ -107,6 +108,7 @@ public class BookingService {
     public BookingResponse complete(UUID bookingId, UUID providerUserId) {
         Booking booking = findProviderBooking(bookingId, providerUserId);
         booking.complete();
+        booking.getProvider().recordCompletedJob();
         return BookingResponse.from(booking);
     }
 
@@ -117,6 +119,20 @@ public class BookingService {
             throw notFound();
         }
         booking.cancelByClient();
+        return BookingResponse.from(booking);
+    }
+
+    @Transactional
+    public BookingResponse markPaymentAsPaid(UUID bookingId, UUID providerUserId) {
+        Booking booking = findProviderBooking(bookingId, providerUserId);
+        booking.markPaymentAsPaid();
+        return BookingResponse.from(booking);
+    }
+
+    @Transactional
+    public BookingResponse markPaymentAsNotConfirmed(UUID bookingId, UUID providerUserId) {
+        Booking booking = findProviderBooking(bookingId, providerUserId);
+        booking.markPaymentAsNotConfirmed();
         return BookingResponse.from(booking);
     }
 

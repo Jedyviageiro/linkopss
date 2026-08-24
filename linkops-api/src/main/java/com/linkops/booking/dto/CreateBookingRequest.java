@@ -1,5 +1,6 @@
 package com.linkops.booking.dto;
 
+import com.linkops.payment.domain.PaymentMethod;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,9 @@ public record CreateBookingRequest(
         String address,
 
         @Size(max = 5000, message = "As observações devem ter no máximo 5000 caracteres.")
-        String notes
+        String notes,
+
+        @NotNull(message = "O método de pagamento é obrigatório.")
+        PaymentMethod paymentMethod
 ) {
 }

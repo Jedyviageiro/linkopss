@@ -3,6 +3,8 @@ package com.linkops.booking.dto;
 import com.linkops.booking.domain.Booking;
 import com.linkops.booking.domain.BookingStatus;
 import com.linkops.service.domain.PriceType;
+import com.linkops.payment.domain.PaymentMethod;
+import com.linkops.payment.domain.PaymentStatus;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -24,6 +26,10 @@ public record BookingResponse(
         String address,
         String notes,
         BookingStatus status,
+        PaymentMethod paymentMethod,
+        String paymentMethodName,
+        PaymentStatus paymentStatus,
+        String paymentStatusName,
         Instant createdAt,
         Instant updatedAt
 ) {
@@ -47,6 +53,10 @@ public record BookingResponse(
                 booking.getAddress(),
                 booking.getNotes(),
                 booking.getStatus(),
+                booking.getPaymentMethod(),
+                booking.getPaymentMethod().getDisplayName(),
+                booking.getPaymentStatus(),
+                booking.getPaymentStatus().getDisplayName(),
                 booking.getCreatedAt(),
                 booking.getUpdatedAt()
         );
