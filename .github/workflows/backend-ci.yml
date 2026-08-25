@@ -1,0 +1,74 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - "linkops-api/**"
+      - ".github/workflows/backend-ci.yml"
+  pull_request:
+    paths:
+      - "linkops-api/**"
+      - ".github/workflows/backend-ci.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend-ci:
+    name: Compile, test and package
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: linkops
+          POSTGRES_USER: linkops
+          POSTGRES_PASSWORD: linkops
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd "pg_isready -U linkops -d linkops"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    defaults:
+      run:
+        working-directory: linkops-api
+
+    env:
+      SPRING_PROFILES_ACTIVE: dev
+      DATABASE_URL: jdbc:postgresql://localhost:5434/linkops
+      DATABASE_USERNAME: linkops
+      DATABASE_PASSWORD: linkops
+      CORS_ALLOWED_ORIGINS: http://localhost:5173
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: linkops-api/pom.xml
+
+      - name: Resolve Maven dependencies
+        run: mvn --batch-mode --no-transfer-progress dependency:go-offline
+
+      - name: Compile
+        run: mvn --batch-mode --no-transfer-progress compile
+
+      - name: Tests
+        run: mvn --batch-mode --no-transfer-progress test
+
+      - name: Package
+        run: mvn --batch-mode --no-transfer-progress package -DskipTests
