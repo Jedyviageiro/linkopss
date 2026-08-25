@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.hamcrest.Matchers.hasItems;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -80,10 +81,14 @@ class AdministrationOpenApiTests {
                 .andExpect(status().isUnauthorized());
 
         mockMvc.perform(get("/admin/users")
-                        .param("sort", "email,asc")
-                        .header(HttpHeaders.AUTHORIZATION, bearer(adminToken)))
+                .param("sort", "email,asc")
+                .header(HttpHeaders.AUTHORIZATION, bearer(adminToken)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content.length()").value(3));
+                .andExpect(jsonPath("$.content[*].email").value(hasItems(
+                        "platform.admin@linkops.local",
+                        "admin.provider@linkops.local",
+                        "admin.client@linkops.local"
+                )));
 
         mockMvc.perform(patch("/admin/providers/{id}/verify", profileId)
                         .header(HttpHeaders.AUTHORIZATION, bearer(adminToken)))
@@ -196,6 +201,8 @@ class AdministrationOpenApiTests {
                 .andExpect(jsonPath("$.components.securitySchemes.bearerAuth.scheme")
                         .value("bearer"))
                 .andExpect(jsonPath("$.paths['/admin/users']").exists())
+                .andExpect(jsonPath("$.paths['/admin/categories'].post").exists())
+                .andExpect(jsonPath("$.paths['/categories'].post").doesNotExist())
                 .andExpect(jsonPath("$.paths['/auth/login']").exists())
                 .andExpect(jsonPath("$.components.schemas.UserResponse").exists());
 

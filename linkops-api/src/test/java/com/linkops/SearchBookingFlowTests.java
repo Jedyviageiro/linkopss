@@ -111,6 +111,11 @@ class SearchBookingFlowTests {
                 .andExpect(status().isNotFound());
 
         mockMvc.perform(patch("/bookings/{id}/accept", bookingId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + clientToken))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.error").value("Acesso negado"));
+
+        mockMvc.perform(patch("/bookings/{id}/accept", bookingId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + outsiderProvider.token()))
                 .andExpect(status().isNotFound());
 

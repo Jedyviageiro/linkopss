@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -90,6 +91,19 @@ public class GlobalExceptionHandler {
                 HttpStatus.UNAUTHORIZED,
                 "Não autenticado",
                 "Credenciais ou token inválidos.",
+                request
+        );
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiError> handleAccessDenied(
+            AccessDeniedException exception,
+            HttpServletRequest request
+    ) {
+        return buildError(
+                HttpStatus.FORBIDDEN,
+                "Acesso negado",
+                "Não tem permissão para realizar esta operação.",
                 request
         );
     }
@@ -222,7 +236,7 @@ public class GlobalExceptionHandler {
             HttpServletRequest request
     ) {
         return buildError(
-                HttpStatus.PAYLOAD_TOO_LARGE,
+                HttpStatus.CONTENT_TOO_LARGE,
                 "Ficheiro demasiado grande",
                 "A imagem deve ter no máximo 5 MB.",
                 request

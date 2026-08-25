@@ -49,7 +49,7 @@ class CategoryServiceOfferingFlowTests {
                 .andExpect(jsonPath("$[?(@.name == 'Reparações para Casa')].children.length()")
                         .value(5));
 
-        mockMvc.perform(post("/categories")
+        mockMvc.perform(post("/admin/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Categoria protegida\"}"))
                 .andExpect(status().isUnauthorized());
@@ -60,7 +60,7 @@ class CategoryServiceOfferingFlowTests {
         ));
         String adminToken = jwtService.generateAccessToken(AuthenticatedUser.from(admin));
 
-        MvcResult createResult = mockMvc.perform(post("/categories")
+        MvcResult createResult = mockMvc.perform(post("/admin/categories")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Formação Profissional\"}"))
@@ -71,7 +71,7 @@ class CategoryServiceOfferingFlowTests {
         String categoryId = JsonPath.read(
                 createResult.getResponse().getContentAsString(), "$.id"
         );
-        mockMvc.perform(patch("/categories/{id}", categoryId)
+        mockMvc.perform(patch("/admin/categories/{id}", categoryId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + adminToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Formação e Cursos\"}"))
