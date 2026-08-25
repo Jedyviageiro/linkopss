@@ -17,6 +17,7 @@ public record AuthenticatedUser(
         String email,
         @JsonIgnore
         String passwordHash,
+        int tokenVersion,
         UserRole role,
         UserStatus status
 ) implements UserDetails {
@@ -26,6 +27,7 @@ public record AuthenticatedUser(
                 user.getId(),
                 user.getEmail(),
                 user.getPasswordHash(),
+                user.getTokenVersion(),
                 user.getRole(),
                 user.getStatus()
         );

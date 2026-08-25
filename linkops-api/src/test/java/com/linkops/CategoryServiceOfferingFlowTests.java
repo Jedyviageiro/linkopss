@@ -153,6 +153,7 @@ class CategoryServiceOfferingFlowTests {
                                   "lastName": "%s",
                                   "email": "%s",
                                   "password": "Senha-segura-123",
+                                  "confirmPassword": "Senha-segura-123",
                                   "role": "PROVIDER"
                                 }
                                 """.formatted(firstName, lastName, email)))

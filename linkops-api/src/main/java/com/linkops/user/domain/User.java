@@ -33,6 +33,9 @@ public class User extends BaseEntity {
     @JsonIgnore
     private String passwordHash;
 
+    @Column(name = "token_version", nullable = false)
+    private int tokenVersion;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private UserRole role;
@@ -54,6 +57,7 @@ public class User extends BaseEntity {
         this.email = normalizeRequired(email).toLowerCase(java.util.Locale.ROOT);
         this.phone = normalizeOptional(phone);
         this.passwordHash = validatePasswordHash(passwordHash);
+        this.tokenVersion = 0;
         if (role == null) {
             throw new IllegalArgumentException("O perfil do utilizador é obrigatório.");
         }
@@ -79,6 +83,11 @@ public class User extends BaseEntity {
 
     public void reactivate() {
         this.status = UserStatus.ACTIVE;
+    }
+
+    public void changePasswordHash(String passwordHash) {
+        this.passwordHash = validatePasswordHash(passwordHash);
+        this.tokenVersion++;
     }
 
     private static String normalizeRequired(String value) {

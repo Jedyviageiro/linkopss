@@ -1,9 +1,12 @@
 package com.linkops.auth.controller;
 
 import com.linkops.auth.dto.AuthResponse;
+import com.linkops.auth.dto.ForgotPasswordRequest;
 import com.linkops.auth.dto.LoginRequest;
+import com.linkops.auth.dto.MessageResponse;
 import com.linkops.auth.dto.RefreshTokenRequest;
 import com.linkops.auth.dto.RegisterRequest;
+import com.linkops.auth.dto.ResetPasswordRequest;
 import com.linkops.auth.service.AuthService;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-@Tag(name = "Autenticação", description = "Registo, login e renovação de tokens JWT")
+@Tag(name = "Autenticação", description = "Registo, login, recuperação de palavra-passe e tokens JWT")
 public class AuthController {
 
     private final AuthService authService;
@@ -63,5 +66,30 @@ public class AuthController {
             @Valid @RequestBody RefreshTokenRequest request
     ) {
         return ResponseEntity.ok(authService.refresh(request));
+    }
+
+    @PostMapping("/forgot-password")
+    @Operation(summary = "Solicitar recuperação da palavra-passe")
+    @ApiResponses({
+            @ApiResponse(responseCode = "202", description = "Pedido recebido"),
+            @ApiResponse(responseCode = "400", description = "E-mail inválido")
+    })
+    public ResponseEntity<MessageResponse> forgotPassword(
+            @Valid @RequestBody ForgotPasswordRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(authService.forgotPassword(request));
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "Redefinir palavra-passe com token de uso único")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Palavra-passe redefinida"),
+            @ApiResponse(responseCode = "400", description = "Token ou dados inválidos")
+    })
+    public ResponseEntity<MessageResponse> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request
+    ) {
+        return ResponseEntity.ok(authService.resetPassword(request));
     }
 }

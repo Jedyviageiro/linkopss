@@ -120,6 +120,7 @@ class MediaFlowTests {
                                   "lastName":"Media",
                                   "email":"media.provider@linkops.local",
                                   "password":"Senha-segura-123",
+                                  "confirmPassword":"Senha-segura-123",
                                   "role":"PROVIDER"
                                 }
                                 """))

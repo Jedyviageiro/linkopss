@@ -171,6 +171,7 @@ class AdministrationOpenApiTests {
                                   "lastName":"%s",
                                   "email":"%s",
                                   "password":"Senha-segura-123",
+                                  "confirmPassword":"Senha-segura-123",
                                   "role":"%s"
                                 }
                                 """.formatted(firstName, lastName, email, role)))

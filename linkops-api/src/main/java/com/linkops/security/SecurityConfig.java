@@ -43,7 +43,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,
                                 "/auth/register",
                                 "/auth/login",
-                                "/auth/refresh"
+                                "/auth/refresh",
+                                "/auth/forgot-password",
+                                "/auth/reset-password"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET,
                                 "/actuator/health",

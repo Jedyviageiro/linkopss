@@ -5,7 +5,9 @@ import com.linkops.user.domain.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Dados para criação de uma conta de cliente ou prestador")
@@ -31,7 +33,16 @@ public record RegisterRequest(
         @BcryptCompatible
         String password,
 
+        @NotBlank
+        @Size(min = 8, max = 72, message = "A confirmação da palavra-passe deve ter entre 8 e 72 caracteres.")
+        String confirmPassword,
+
         @NotNull
         UserRole role
 ) {
+    @JsonIgnore
+    @AssertTrue(message = "A palavra-passe e a confirmação devem ser iguais.")
+    public boolean isPasswordConfirmed() {
+        return password != null && password.equals(confirmPassword);
+    }
 }

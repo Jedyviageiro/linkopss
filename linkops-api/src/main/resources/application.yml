@@ -65,6 +65,15 @@ linkops:
       connect-timeout: ${CLOUDINARY_CONNECT_TIMEOUT:5s}
       read-timeout: ${CLOUDINARY_READ_TIMEOUT:30s}
   security:
+    password-reset:
+      expiration: ${PASSWORD_RESET_EXPIRATION:30m}
+      frontend-url: ${PASSWORD_RESET_FRONTEND_URL:http://localhost:5173/reset-password}
+      email-from: ${MAIL_FROM:no-reply@linkops.co.mz}
+      mail-host: ${MAIL_HOST:}
+      mail-port: ${MAIL_PORT:587}
+      mail-username: ${MAIL_USERNAME:}
+      mail-password: ${MAIL_PASSWORD:}
+      mail-starttls: ${MAIL_STARTTLS:true}
     jwt:
       secret: ${JWT_SECRET}
       issuer: ${JWT_ISSUER:linkops-api}

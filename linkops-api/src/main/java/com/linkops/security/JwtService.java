@@ -71,6 +71,7 @@ public class JwtService {
         JWTClaimsSet claims = validate(token, ACCESS_TOKEN_TYPE);
         return user.id().toString().equals(claims.getSubject())
                 && user.email().equalsIgnoreCase(stringClaim(claims, "email"))
+                && user.tokenVersion() == integerClaim(claims, "token_version")
                 && user.isEnabled()
                 && user.isAccountNonLocked();
     }
@@ -79,6 +80,7 @@ public class JwtService {
         JWTClaimsSet claims = validate(token, REFRESH_TOKEN_TYPE);
         return user.id().toString().equals(claims.getSubject())
                 && user.email().equalsIgnoreCase(stringClaim(claims, "email"))
+                && user.tokenVersion() == integerClaim(claims, "token_version")
                 && user.isEnabled()
                 && user.isAccountNonLocked();
     }
@@ -109,6 +111,7 @@ public class JwtService {
                 .expirationTime(Date.from(now.plus(expiration)))
                 .claim("email", user.email())
                 .claim("role", user.role().name())
+                .claim("token_version", user.tokenVersion())
                 .claim(TOKEN_TYPE_CLAIM, tokenType)
                 .build();
 
@@ -153,6 +156,14 @@ public class JwtService {
         } catch (ParseException exception) {
             throw invalidToken(exception);
         }
+    }
+
+    private int integerClaim(JWTClaimsSet claims, String claim) {
+        Object value = claims.getClaim(claim);
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+        throw invalidToken(null);
     }
 
     private BadCredentialsException invalidToken(Exception cause) {

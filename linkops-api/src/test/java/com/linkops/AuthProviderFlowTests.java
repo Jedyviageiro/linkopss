@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -33,6 +34,7 @@ class AuthProviderFlowTests {
                   "email": "provider.flow.test@linkops.local",
                   "phone": "+258840000001",
                   "password": "Senha-segura-123",
+                  "confirmPassword": "Senha-segura-123",
                   "role": "PROVIDER"
                 }
                 """;
@@ -86,6 +88,38 @@ class AuthProviderFlowTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.city").value("Maputo"));
 
+        mockMvc.perform(get("/providers/me")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(profileId));
+
+        mockMvc.perform(patch("/providers/me")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "bio":"Especialista em instalações e manutenção",
+                                  "city":"Matola",
+                                  "latitude":-25.9622,
+                                  "longitude":32.4589
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.city").value("Matola"));
+
+        mockMvc.perform(patch("/users/me")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "firstName":"Ana Maria",
+                                  "phone":"+258850000001"
+                                }
+                                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value("Ana Maria"))
+                .andExpect(jsonPath("$.phone").value("+258850000001"));
+
         mockMvc.perform(get("/providers?page=0&size=10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content[0]").exists());
@@ -119,6 +153,7 @@ class AuthProviderFlowTests {
                                   "lastName": "Tembe",
                                   "email": "client.flow.test@linkops.local",
                                   "password": "Senha-segura-123",
+                                  "confirmPassword": "Senha-segura-123",
                                   "role": "CLIENT"
                                 }
                                 """))

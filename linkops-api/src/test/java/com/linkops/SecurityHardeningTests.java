@@ -61,6 +61,7 @@ class SecurityHardeningTests {
                                   "lastName":"Segura",
                                   "email":"sara.security@linkops.local",
                                   "password":"Senha-segura-123",
+                                  "confirmPassword":"Senha-segura-123",
                                   "role":"CLIENT"
                                 }
                                 """))
@@ -132,6 +133,7 @@ class SecurityHardeningTests {
                                   "lastName":"Protegido",
                                   "email":"paulo.protected@linkops.local",
                                   "password":"Senha-segura-123",
+                                  "confirmPassword":"Senha-segura-123",
                                   "role":"PROVIDER"
                                 }
                                 """))

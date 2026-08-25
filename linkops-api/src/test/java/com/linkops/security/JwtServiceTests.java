@@ -23,6 +23,7 @@ class JwtServiceTests {
             UUID.randomUUID(),
             "jwt.test@linkops.local",
             "$2a$10$hash",
+            0,
             UserRole.PROVIDER,
             UserStatus.ACTIVE
     );
