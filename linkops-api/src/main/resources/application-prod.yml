@@ -17,3 +17,7 @@ spring:
 
 server:
   port: ${SERVER_PORT:${PORT:8081}}
+
+linkops:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS}

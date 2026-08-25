@@ -19,5 +19,38 @@ services:
       start_period: 5s
     restart: unless-stopped
 
+  api:
+    build:
+      context: ./linkops-api
+      dockerfile: Dockerfile
+    image: linkops-api:local
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      SERVER_PORT: 8081
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-linkops}
+      DATABASE_USERNAME: ${POSTGRES_USER:-linkops}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-linkops}
+      JWT_SECRET: ${JWT_SECRET:-linkops-docker-development-secret-change-me-32-bytes}
+      JWT_ISSUER: ${JWT_ISSUER:-linkops-api}
+      JWT_ACCESS_EXPIRATION: ${JWT_ACCESS_EXPIRATION:-900000}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-604800000}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:5173,http://localhost:4200,http://localhost:19006}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+    ports:
+      - "${API_PORT:-8081}:8081"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:8081/api/v1/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 40s
+    init: true
+    restart: unless-stopped
+
 volumes:
   linkops_postgres_data:

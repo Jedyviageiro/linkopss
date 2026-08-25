@@ -47,6 +47,8 @@ springdoc:
     persist-authorization: true
 
 linkops:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:}
   media:
     max-file-size: 5242880
     max-images-per-service: 8
