@@ -6,6 +6,10 @@ import com.linkops.service.dto.ServiceOfferingResponse;
 import com.linkops.service.dto.UpdateServiceOfferingRequest;
 import com.linkops.service.service.ServiceOfferingService;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -27,6 +31,7 @@ import java.math.BigDecimal;
 
 @RestController
 @RequestMapping
+@Tag(name = "Serviços")
 public class ServiceOfferingController {
 
     private final ServiceOfferingService serviceOfferingService;
@@ -36,6 +41,9 @@ public class ServiceOfferingController {
     }
 
     @PostMapping("/services")
+    @Operation(summary = "Publicar um serviço")
+    @ApiResponse(responseCode = "201", description = "Serviço publicado")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<ServiceOfferingResponse> create(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
@@ -46,6 +54,8 @@ public class ServiceOfferingController {
     }
 
     @PatchMapping("/services/{id}")
+    @Operation(summary = "Atualizar um serviço próprio")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<ServiceOfferingResponse> update(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
@@ -58,6 +68,8 @@ public class ServiceOfferingController {
     }
 
     @DeleteMapping("/services/{id}")
+    @Operation(summary = "Desativar um serviço próprio")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<Void> deactivate(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
@@ -68,6 +80,7 @@ public class ServiceOfferingController {
     }
 
     @GetMapping("/services")
+    @Operation(summary = "Pesquisar serviços com filtros e paginação")
     public ResponseEntity<Page<ServiceOfferingResponse>> list(
             @RequestParam(required = false, name = "q") String query,
             @RequestParam(required = false) String category,
@@ -82,11 +95,13 @@ public class ServiceOfferingController {
     }
 
     @GetMapping("/services/{id}")
+    @Operation(summary = "Consultar um serviço público")
     public ResponseEntity<ServiceOfferingResponse> get(@PathVariable UUID id) {
         return ResponseEntity.ok(serviceOfferingService.getPublic(id));
     }
 
     @GetMapping("/providers/{providerId}/services")
+    @Operation(summary = "Listar os serviços públicos de um prestador")
     public ResponseEntity<Page<ServiceOfferingResponse>> listByProvider(
             @PathVariable UUID providerId,
             Pageable pageable

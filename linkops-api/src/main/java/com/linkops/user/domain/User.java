@@ -71,6 +71,14 @@ public class User extends BaseEntity {
         }
     }
 
+    public void suspend() {
+        this.status = UserStatus.SUSPENDED;
+    }
+
+    public void reactivate() {
+        this.status = UserStatus.ACTIVE;
+    }
+
     private static String normalizeRequired(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("O valor informado é obrigatório.");

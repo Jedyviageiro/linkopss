@@ -34,6 +34,10 @@ public interface ServiceOfferingRepository extends
     @EntityGraph(attributePaths = {"provider", "provider.user", "category"})
     Optional<ServiceOffering> findByIdAndProvider_User_Id(UUID id, UUID userId);
 
+    @EntityGraph(attributePaths = {"provider", "provider.user", "category"})
+    @Override
+    Page<ServiceOffering> findAll(Pageable pageable);
+
     @Override
     @EntityGraph(attributePaths = {"provider", "provider.user", "category"})
     Page<ServiceOffering> findAll(Specification<ServiceOffering> specification, Pageable pageable);

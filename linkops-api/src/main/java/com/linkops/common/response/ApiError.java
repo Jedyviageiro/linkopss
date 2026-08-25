@@ -1,9 +1,12 @@
 package com.linkops.common.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 
+@Schema(description = "Formato padronizado de erro HTTP")
 public record ApiError(
         Instant timestamp,
         int status,

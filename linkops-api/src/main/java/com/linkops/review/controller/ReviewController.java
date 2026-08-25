@@ -4,6 +4,10 @@ import com.linkops.review.dto.CreateReviewRequest;
 import com.linkops.review.dto.ReviewResponse;
 import com.linkops.review.service.ReviewService;
 import com.linkops.security.AuthenticatedUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +26,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping
+@Tag(name = "Avaliações")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -31,6 +36,9 @@ public class ReviewController {
     }
 
     @PostMapping("/bookings/{bookingId}/review")
+    @Operation(summary = "Avaliar um serviço concluído")
+    @ApiResponse(responseCode = "201", description = "Avaliação criada")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<ReviewResponse> create(
             @PathVariable UUID bookingId,
@@ -42,6 +50,7 @@ public class ReviewController {
     }
 
     @GetMapping("/providers/{providerId}/reviews")
+    @Operation(summary = "Listar as avaliações públicas de um prestador")
     public ResponseEntity<Page<ReviewResponse>> listByProvider(
             @PathVariable UUID providerId,
             Pageable pageable

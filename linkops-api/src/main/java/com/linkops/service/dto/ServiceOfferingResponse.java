@@ -1,5 +1,7 @@
 package com.linkops.service.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import com.linkops.service.domain.PriceType;
 import com.linkops.service.domain.ServiceOffering;
 import com.linkops.location.dto.LocationResponse;
@@ -8,6 +10,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+@Schema(description = "Serviço publicado por um prestador")
 public record ServiceOfferingResponse(
         UUID id,
         UUID providerId,

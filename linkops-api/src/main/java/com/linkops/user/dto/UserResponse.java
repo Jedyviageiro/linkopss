@@ -6,7 +6,9 @@ import com.linkops.user.domain.UserStatus;
 
 import java.time.Instant;
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Dados públicos e administrativos de um utilizador")
 public record UserResponse(
         UUID id,
         String firstName,

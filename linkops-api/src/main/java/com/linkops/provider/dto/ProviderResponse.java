@@ -7,7 +7,9 @@ import com.linkops.location.dto.LocationResponse;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Perfil profissional de um prestador")
 public record ProviderResponse(
         UUID id,
         UUID userId,

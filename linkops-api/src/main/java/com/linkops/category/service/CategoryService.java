@@ -101,6 +101,13 @@ public class CategoryService {
         }
     }
 
+    @Transactional
+    public void deactivate(UUID id) {
+        Category category = findById(id);
+        category.deactivate();
+        categoryRepository.findAllByParent_Id(id).forEach(Category::deactivate);
+    }
+
     private Category findOptionalParent(UUID parentId) {
         return parentId == null ? null : findById(parentId);
     }

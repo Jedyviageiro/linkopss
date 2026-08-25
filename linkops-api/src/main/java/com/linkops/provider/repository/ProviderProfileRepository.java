@@ -26,6 +26,10 @@ public interface ProviderProfileRepository extends JpaRepository<ProviderProfile
     Page<ProviderProfile> findAllByStatus(ProviderStatus status, Pageable pageable);
 
     @EntityGraph(attributePaths = "user")
+    @Override
+    Page<ProviderProfile> findAll(Pageable pageable);
+
+    @EntityGraph(attributePaths = "user")
     @Query(
             value = """
                     select provider from ProviderProfile provider

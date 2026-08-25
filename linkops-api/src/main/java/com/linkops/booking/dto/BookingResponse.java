@@ -1,5 +1,7 @@
 package com.linkops.booking.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 import com.linkops.booking.domain.Booking;
 import com.linkops.booking.domain.BookingStatus;
 import com.linkops.service.domain.PriceType;
@@ -10,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+@Schema(description = "Pedido de serviço e respetivo estado")
 public record BookingResponse(
         UUID id,
         UUID clientId,

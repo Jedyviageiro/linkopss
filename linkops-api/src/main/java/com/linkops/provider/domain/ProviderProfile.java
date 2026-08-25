@@ -110,6 +110,20 @@ public class ProviderProfile extends BaseEntity {
         this.profileImageUrl = normalizeOptional(profileImageUrl);
     }
 
+    public void verify() {
+        this.verified = true;
+    }
+
+    public void suspend() {
+        this.status = ProviderStatus.SUSPENDED;
+    }
+
+    public void reactivateAfterUserSuspension() {
+        if (this.status == ProviderStatus.SUSPENDED) {
+            this.status = ProviderStatus.ACTIVE;
+        }
+    }
+
     private static String normalizeRequired(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("A cidade é obrigatória.");

@@ -5,7 +5,9 @@ import com.linkops.notification.domain.NotificationType;
 
 import java.time.Instant;
 import java.util.UUID;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Notificação interna destinada ao utilizador autenticado")
 public record NotificationResponse(
         UUID id,
         NotificationType type,

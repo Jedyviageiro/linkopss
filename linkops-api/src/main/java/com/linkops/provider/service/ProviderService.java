@@ -134,6 +134,22 @@ public class ProviderService {
                 .map(ProviderResponse::from);
     }
 
+    @Transactional(readOnly = true)
+    public Page<ProviderResponse> listAll(Pageable pageable) {
+        return providerProfileRepository.findAll(providerPageable(pageable))
+                .map(ProviderResponse::from);
+    }
+
+    @Transactional
+    public ProviderResponse verify(UUID profileId) {
+        ProviderProfile profile = providerProfileRepository.findById(profileId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Perfil de prestador não encontrado."
+                ));
+        profile.verify();
+        return ProviderResponse.from(profile);
+    }
+
     private User findUser(UUID userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Utilizador não encontrado."));

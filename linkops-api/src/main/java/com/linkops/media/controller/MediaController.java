@@ -3,6 +3,10 @@ package com.linkops.media.controller;
 import com.linkops.media.dto.MediaResponse;
 import com.linkops.media.service.MediaService;
 import com.linkops.security.AuthenticatedUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +25,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/media")
+@Tag(name = "Imagens")
 public class MediaController {
 
     private final MediaService mediaService;
@@ -33,6 +38,9 @@ public class MediaController {
             value = "/providers/profile-image",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
+    @Operation(summary = "Enviar a imagem de perfil do prestador")
+    @ApiResponse(responseCode = "201", description = "Imagem enviada")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<MediaResponse> uploadProviderImage(
             @AuthenticationPrincipal AuthenticatedUser user,
@@ -46,6 +54,9 @@ public class MediaController {
             value = "/services/{serviceId}/images",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
+    @Operation(summary = "Adicionar uma imagem a um serviço próprio")
+    @ApiResponse(responseCode = "201", description = "Imagem enviada")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<MediaResponse> uploadServiceImage(
             @PathVariable UUID serviceId,
@@ -57,6 +68,7 @@ public class MediaController {
     }
 
     @GetMapping("/services/{serviceId}/images")
+    @Operation(summary = "Listar as imagens públicas de um serviço")
     public ResponseEntity<List<MediaResponse>> listServiceImages(
             @PathVariable UUID serviceId
     ) {

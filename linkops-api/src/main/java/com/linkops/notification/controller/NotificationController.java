@@ -3,6 +3,9 @@ package com.linkops.notification.controller;
 import com.linkops.notification.dto.NotificationResponse;
 import com.linkops.notification.service.NotificationService;
 import com.linkops.security.AuthenticatedUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/notifications")
+@Tag(name = "Notificações")
+@SecurityRequirement(name = "bearerAuth")
 public class NotificationController {
 
     private final NotificationService notificationService;
@@ -26,6 +31,7 @@ public class NotificationController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar as notificações do utilizador")
     public ResponseEntity<Page<NotificationResponse>> list(
             @AuthenticationPrincipal AuthenticatedUser user,
             Pageable pageable
@@ -34,6 +40,7 @@ public class NotificationController {
     }
 
     @PatchMapping("/{id}/read")
+    @Operation(summary = "Marcar uma notificação como lida")
     public ResponseEntity<NotificationResponse> markAsRead(
             @PathVariable UUID id,
             @AuthenticationPrincipal AuthenticatedUser user

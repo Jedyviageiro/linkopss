@@ -5,6 +5,10 @@ import com.linkops.provider.dto.ProviderResponse;
 import com.linkops.provider.dto.UpdateProviderProfileRequest;
 import com.linkops.provider.service.ProviderService;
 import com.linkops.security.AuthenticatedUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +29,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/providers")
+@Tag(name = "Prestadores")
 public class ProviderController {
 
     private final ProviderService providerService;
@@ -34,6 +39,9 @@ public class ProviderController {
     }
 
     @PostMapping("/profile")
+    @Operation(summary = "Criar o perfil profissional do prestador")
+    @ApiResponse(responseCode = "201", description = "Perfil criado")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<ProviderResponse> createProfile(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
@@ -44,6 +52,8 @@ public class ProviderController {
     }
 
     @GetMapping("/me")
+    @Operation(summary = "Consultar o próprio perfil profissional")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<ProviderResponse> getOwnProfile(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser
@@ -52,6 +62,8 @@ public class ProviderController {
     }
 
     @PatchMapping("/me")
+    @Operation(summary = "Atualizar o próprio perfil profissional")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<ProviderResponse> updateOwnProfile(
             @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
@@ -63,11 +75,13 @@ public class ProviderController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Consultar o perfil público de um prestador")
     public ResponseEntity<ProviderResponse> getPublicProfile(@PathVariable UUID id) {
         return ResponseEntity.ok(providerService.getPublicProfile(id));
     }
 
     @GetMapping
+    @Operation(summary = "Pesquisar prestadores com filtros e paginação")
     public ResponseEntity<Page<ProviderResponse>> listProviders(
             @RequestParam(required = false, name = "q") String query,
             @RequestParam(required = false) String category,

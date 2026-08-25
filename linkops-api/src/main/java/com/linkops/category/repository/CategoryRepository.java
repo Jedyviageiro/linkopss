@@ -19,4 +19,6 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
     @EntityGraph(attributePaths = "parent")
     Optional<Category> findByIdAndActiveTrue(UUID id);
+
+    List<Category> findAllByParent_Id(UUID parentId);
 }

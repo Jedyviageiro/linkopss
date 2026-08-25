@@ -5,6 +5,9 @@ import com.linkops.booking.dto.CreateBookingRequest;
 import com.linkops.booking.service.BookingService;
 import com.linkops.security.AuthenticatedUser;
 import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -23,6 +26,8 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/bookings")
+@Tag(name = "Pedidos e agendamentos")
+@SecurityRequirement(name = "bearerAuth")
 public class BookingController {
 
     private final BookingService bookingService;
@@ -32,6 +37,7 @@ public class BookingController {
     }
 
     @PostMapping
+    @Operation(summary = "Criar um pedido de serviço", description = "Disponível para clientes.")
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<BookingResponse> create(
             @AuthenticationPrincipal AuthenticatedUser user,
@@ -42,6 +48,7 @@ public class BookingController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar o histórico de pedidos do utilizador")
     public ResponseEntity<Page<BookingResponse>> history(
             @AuthenticationPrincipal AuthenticatedUser user,
             Pageable pageable
@@ -50,6 +57,7 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Consultar um pedido")
     public ResponseEntity<BookingResponse> get(
             @PathVariable UUID id,
             @AuthenticationPrincipal AuthenticatedUser user
@@ -58,6 +66,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{id}/accept")
+    @Operation(summary = "Aceitar um pedido")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<BookingResponse> accept(
             @PathVariable UUID id,
@@ -67,6 +76,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{id}/reject")
+    @Operation(summary = "Rejeitar um pedido")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<BookingResponse> reject(
             @PathVariable UUID id,
@@ -76,6 +86,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{id}/start")
+    @Operation(summary = "Iniciar a execução do serviço")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<BookingResponse> start(
             @PathVariable UUID id,
@@ -85,6 +96,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{id}/complete")
+    @Operation(summary = "Concluir o serviço")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<BookingResponse> complete(
             @PathVariable UUID id,
@@ -94,6 +106,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{id}/cancel")
+    @Operation(summary = "Cancelar um pedido quando permitido")
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<BookingResponse> cancel(
             @PathVariable UUID id,
@@ -103,6 +116,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{id}/payment/paid")
+    @Operation(summary = "Registar pagamento como concluído")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<BookingResponse> markPaymentAsPaid(
             @PathVariable UUID id,
@@ -112,6 +126,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{id}/payment/not-confirmed")
+    @Operation(summary = "Registar pagamento como não confirmado")
     @PreAuthorize("hasRole('PROVIDER')")
     public ResponseEntity<BookingResponse> markPaymentAsNotConfirmed(
             @PathVariable UUID id,

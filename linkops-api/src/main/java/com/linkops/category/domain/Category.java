@@ -50,6 +50,10 @@ public class Category extends BaseEntity {
         }
     }
 
+    public void deactivate() {
+        this.active = false;
+    }
+
     private static String normalizeName(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("O nome da categoria é obrigatório.");

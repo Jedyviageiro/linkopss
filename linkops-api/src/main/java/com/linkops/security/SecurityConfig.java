@@ -40,7 +40,10 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/auth/**",
                                 "/actuator/health",
-                                "/actuator/info"
+                                "/actuator/info",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html",
+                                "/swagger-ui/**"
                         ).permitAll()
                         .requestMatchers(HttpMethod.GET, "/providers/me").authenticated()
                         .requestMatchers(

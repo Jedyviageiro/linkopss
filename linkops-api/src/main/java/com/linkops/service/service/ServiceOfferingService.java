@@ -134,6 +134,19 @@ public class ServiceOfferingService {
                 .map(ServiceOfferingResponse::from);
     }
 
+    @Transactional(readOnly = true)
+    public Page<ServiceOfferingResponse> listAll(Pageable pageable) {
+        return serviceOfferingRepository.findAll(servicePageable(pageable))
+                .map(ServiceOfferingResponse::from);
+    }
+
+    @Transactional
+    public void deactivateByAdministrator(UUID offeringId) {
+        ServiceOffering offering = serviceOfferingRepository.findById(offeringId)
+                .orElseThrow(() -> new ResourceNotFoundException("Serviço não encontrado."));
+        offering.deactivate();
+    }
+
     private ProviderProfile findActiveProviderByUserId(UUID userId) {
         ProviderProfile provider = providerProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
