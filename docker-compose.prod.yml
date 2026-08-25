@@ -1,0 +1,44 @@
+name: linkops-prod
+
+services:
+  api:
+    image: ${LINKOPS_API_IMAGE:?Defina LINKOPS_API_IMAGE com uma tag imutável}
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SERVER_PORT: 8081
+      DATABASE_URL: ${DATABASE_URL:?Defina DATABASE_URL}
+      DATABASE_USERNAME: ${DATABASE_USERNAME:?Defina DATABASE_USERNAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:?Defina DATABASE_PASSWORD}
+      DATABASE_MAX_POOL_SIZE: ${DATABASE_MAX_POOL_SIZE:-10}
+      DATABASE_MIN_IDLE: ${DATABASE_MIN_IDLE:-2}
+      JWT_SECRET: ${JWT_SECRET:?Defina JWT_SECRET com pelo menos 32 bytes}
+      JWT_ISSUER: ${JWT_ISSUER:-linkops-api}
+      JWT_ACCESS_EXPIRATION: ${JWT_ACCESS_EXPIRATION:-900000}
+      JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-604800000}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:?Defina CORS_ALLOWED_ORIGINS}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:?Defina CLOUDINARY_CLOUD_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:?Defina CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:?Defina CLOUDINARY_API_SECRET}
+    ports:
+      - "${API_PORT:-8081}:8081"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:8081/api/v1/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 45s
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 35s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

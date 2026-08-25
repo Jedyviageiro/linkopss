@@ -41,6 +41,14 @@ class SecurityHardeningTests {
 
         mockMvc.perform(get("/actuator/info"))
                 .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/actuator/health/liveness"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"));
+
+        mockMvc.perform(get("/actuator/health/readiness"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("UP"));
     }
 
     @Test

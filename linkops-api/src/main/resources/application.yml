@@ -62,6 +62,8 @@ linkops:
       cloud-name: ${CLOUDINARY_CLOUD_NAME:}
       api-key: ${CLOUDINARY_API_KEY:}
       api-secret: ${CLOUDINARY_API_SECRET:}
+      connect-timeout: ${CLOUDINARY_CONNECT_TIMEOUT:5s}
+      read-timeout: ${CLOUDINARY_READ_TIMEOUT:30s}
   security:
     jwt:
       secret: ${JWT_SECRET}

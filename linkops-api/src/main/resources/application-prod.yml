@@ -4,12 +4,23 @@ spring:
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: ${DATABASE_MAX_POOL_SIZE:10}
+      minimum-idle: ${DATABASE_MIN_IDLE:2}
+      connection-timeout: ${DATABASE_CONNECTION_TIMEOUT:30000}
+      validation-timeout: ${DATABASE_VALIDATION_TIMEOUT:5000}
+      idle-timeout: ${DATABASE_IDLE_TIMEOUT:600000}
+      max-lifetime: ${DATABASE_MAX_LIFETIME:1800000}
 
   jpa:
     hibernate:
       ddl-auto: validate
 
     show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        generate_statistics: false
 
   flyway:
     enabled: true
@@ -28,8 +39,12 @@ spring:
       whitelabel:
         enabled: false
 
+  lifecycle:
+    timeout-per-shutdown-phase: ${SHUTDOWN_TIMEOUT:30s}
+
 server:
   port: ${SERVER_PORT:${PORT:8081}}
+  shutdown: graceful
 
 management:
   endpoints:
@@ -39,6 +54,16 @@ management:
   endpoint:
     health:
       show-details: never
+      show-components: never
+      probes:
+        enabled: true
+  health:
+    db:
+      enabled: true
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
 
 springdoc:
   api-docs:
@@ -55,3 +80,16 @@ linkops:
       issuer: ${JWT_ISSUER:linkops-api}
       access-token-expiration: ${JWT_ACCESS_EXPIRATION:900000}
       refresh-token-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+  media:
+    cloudinary:
+      cloud-name: ${CLOUDINARY_CLOUD_NAME}
+      api-key: ${CLOUDINARY_API_KEY}
+      api-secret: ${CLOUDINARY_API_SECRET}
+      connect-timeout: ${CLOUDINARY_CONNECT_TIMEOUT:5s}
+      read-timeout: ${CLOUDINARY_READ_TIMEOUT:30s}
+
+logging:
+  level:
+    org.hibernate.SQL: WARN
+    org.hibernate.orm.jdbc.bind: WARN
+    org.springframework.jdbc.core: WARN
