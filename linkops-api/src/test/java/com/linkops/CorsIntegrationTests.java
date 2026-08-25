@@ -1,5 +1,6 @@
 package com.linkops;
 
+import com.linkops.config.CorsConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -63,5 +65,18 @@ class CorsIntegrationTests {
                 .andExpect(header().doesNotExist(
                         HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN
                 ));
+    }
+
+    @Test
+    void shouldRejectWildcardOrMalformedCorsConfiguration() {
+        CorsConfig corsConfig = new CorsConfig();
+
+        assertThatThrownBy(() -> corsConfig.corsConfigurationSource(
+                java.util.List.of("*")
+        )).isInstanceOf(IllegalArgumentException.class);
+
+        assertThatThrownBy(() -> corsConfig.corsConfigurationSource(
+                java.util.List.of("https://app.linkops.example/path")
+        )).isInstanceOf(IllegalArgumentException.class);
     }
 }

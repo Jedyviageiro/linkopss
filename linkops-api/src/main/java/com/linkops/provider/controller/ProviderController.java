@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Size;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -24,12 +25,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/providers")
 @Tag(name = "Prestadores")
+@Validated
 public class ProviderController {
 
     private final ProviderService providerService;
@@ -83,9 +86,15 @@ public class ProviderController {
     @GetMapping
     @Operation(summary = "Pesquisar prestadores com filtros e paginação")
     public ResponseEntity<Page<ProviderResponse>> listProviders(
-            @RequestParam(required = false, name = "q") String query,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String city,
+            @RequestParam(required = false, name = "q")
+            @Size(max = 200, message = "A pesquisa deve ter no máximo 200 caracteres.")
+            String query,
+            @RequestParam(required = false)
+            @Size(max = 120, message = "A categoria deve ter no máximo 120 caracteres.")
+            String category,
+            @RequestParam(required = false)
+            @Size(max = 100, message = "A cidade deve ter no máximo 100 caracteres.")
+            String city,
             Pageable pageable
     ) {
         return ResponseEntity.ok(providerService.searchProviders(

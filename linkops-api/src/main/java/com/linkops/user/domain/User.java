@@ -1,5 +1,6 @@
 package com.linkops.user.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.linkops.common.domain.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,6 +30,7 @@ public class User extends BaseEntity {
     private String phone;
 
     @Column(name = "password_hash", nullable = false, length = 255)
+    @JsonIgnore
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
@@ -51,7 +53,7 @@ public class User extends BaseEntity {
         this.lastName = normalizeRequired(lastName);
         this.email = normalizeRequired(email).toLowerCase(java.util.Locale.ROOT);
         this.phone = normalizeOptional(phone);
-        this.passwordHash = normalizeRequired(passwordHash);
+        this.passwordHash = validatePasswordHash(passwordHash);
         if (role == null) {
             throw new IllegalArgumentException("O perfil do utilizador é obrigatório.");
         }
@@ -88,5 +90,15 @@ public class User extends BaseEntity {
 
     private static String normalizeOptional(String value) {
         return value == null || value.isBlank() ? null : value.trim();
+    }
+
+    private static String validatePasswordHash(String value) {
+        String hash = normalizeRequired(value);
+        if (!hash.matches("^\\$2[aby]\\$\\d{2}\\$.{53}$")) {
+            throw new IllegalArgumentException(
+                    "A palavra-passe deve ser armazenada exclusivamente como hash BCrypt."
+            );
+        }
+        return hash;
     }
 }

@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -91,6 +94,13 @@ class MediaFlowTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(1));
 
+        verify(cloudStorage, atLeastOnce()).upload(
+                any(byte[].class),
+                eq(MediaType.IMAGE_PNG_VALUE),
+                eq("imagem.png"),
+                anyString()
+        );
+
         MockMultipartFile invalid = new MockMultipartFile(
                 "file", "fake.png", MediaType.IMAGE_PNG_VALUE,
                 "isto não é uma imagem".getBytes(java.nio.charset.StandardCharsets.UTF_8)
@@ -136,12 +146,11 @@ class MediaFlowTests {
     }
 
     private MockMultipartFile pngImage() {
-        byte[] content = new byte[]{
-                (byte) 0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A,
-                0x00, 0x00, 0x00, 0x00
-        };
+        byte[] content = java.util.Base64.getDecoder().decode(
+                "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+        );
         return new MockMultipartFile(
-                "file", "imagem.png", MediaType.IMAGE_PNG_VALUE, content
+                "file", "imagem.php", MediaType.IMAGE_PNG_VALUE, content
         );
     }
 }

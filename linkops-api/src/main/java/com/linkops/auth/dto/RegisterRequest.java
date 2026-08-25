@@ -1,5 +1,6 @@
 package com.linkops.auth.dto;
 
+import com.linkops.common.validation.BcryptCompatible;
 import com.linkops.user.domain.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -27,6 +28,7 @@ public record RegisterRequest(
 
         @NotBlank
         @Size(min = 8, max = 72, message = "A palavra-passe deve ter entre 8 e 72 caracteres.")
+        @BcryptCompatible
         String password,
 
         @NotNull

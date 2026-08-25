@@ -15,7 +15,7 @@ class AuthenticatedUserTests {
                 "Macamo",
                 "joao@linkops.local",
                 null,
-                "$2a$10$hash",
+                "$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy",
                 UserRole.PROVIDER
         );
 

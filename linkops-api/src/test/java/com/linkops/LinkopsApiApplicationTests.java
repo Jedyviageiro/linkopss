@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 class LinkopsApiApplicationTests {
@@ -47,6 +48,19 @@ class LinkopsApiApplicationTests {
 		assertThat(passwordEncoder.matches("Senha-segura-123", savedUser.getPasswordHash())).isTrue();
 		assertThat(userRepository.findByEmailIgnoreCase("MARIA.AUDITING.TEST@LINKOPS.LOCAL"))
 				.contains(savedUser);
+	}
+
+	@Test
+	void shouldRejectPlaintextPasswordAtTheDomainBoundary() {
+		assertThatThrownBy(() -> new User(
+				"Utilizador",
+				"Inseguro",
+				"plaintext@linkops.local",
+				null,
+				"Senha-segura-123",
+				UserRole.CLIENT
+		)).isInstanceOf(IllegalArgumentException.class)
+				.hasMessageContaining("BCrypt");
 	}
 
 }

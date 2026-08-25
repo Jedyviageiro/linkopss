@@ -36,11 +36,25 @@ public class JwtService {
             @Value("${linkops.security.jwt.access-token-expiration}") long accessTokenExpiration,
             @Value("${linkops.security.jwt.refresh-token-expiration}") long refreshTokenExpiration
     ) {
+        if (secret == null || secret.isBlank()) {
+            throw new IllegalArgumentException("JWT_SECRET é obrigatório.");
+        }
         this.secret = secret.getBytes(StandardCharsets.UTF_8);
         if (this.secret.length < 32) {
             throw new IllegalArgumentException("JWT_SECRET deve ter pelo menos 32 bytes.");
         }
-        this.issuer = issuer;
+        if (issuer == null || issuer.isBlank()) {
+            throw new IllegalArgumentException("O emissor dos tokens JWT é obrigatório.");
+        }
+        if (accessTokenExpiration <= 0) {
+            throw new IllegalArgumentException("A expiração do access token deve ser positiva.");
+        }
+        if (refreshTokenExpiration <= accessTokenExpiration) {
+            throw new IllegalArgumentException(
+                    "A expiração do refresh token deve ser superior à do access token."
+            );
+        }
+        this.issuer = issuer.trim();
         this.accessTokenExpiration = Duration.ofMillis(accessTokenExpiration);
         this.refreshTokenExpiration = Duration.ofMillis(refreshTokenExpiration);
     }
@@ -119,8 +133,11 @@ public class JwtService {
             Instant now = Instant.now();
             if (!issuer.equals(claims.getIssuer())
                     || claims.getSubject() == null
+                    || claims.getIssueTime() == null
+                    || claims.getIssueTime().toInstant().isAfter(now.plusSeconds(30))
                     || claims.getExpirationTime() == null
                     || !claims.getExpirationTime().toInstant().isAfter(now)
+                    || !claims.getExpirationTime().after(claims.getIssueTime())
                     || !expectedType.equals(claims.getStringClaim(TOKEN_TYPE_CLAIM))) {
                 throw invalidToken(null);
             }

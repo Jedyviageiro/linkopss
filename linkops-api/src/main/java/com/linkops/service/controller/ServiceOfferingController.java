@@ -6,6 +6,9 @@ import com.linkops.service.dto.ServiceOfferingResponse;
 import com.linkops.service.dto.UpdateServiceOfferingRequest;
 import com.linkops.service.service.ServiceOfferingService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
+import jakarta.validation.constraints.Size;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.UUID;
 import java.math.BigDecimal;
@@ -32,6 +36,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping
 @Tag(name = "Serviços")
+@Validated
 public class ServiceOfferingController {
 
     private final ServiceOfferingService serviceOfferingService;
@@ -82,11 +87,23 @@ public class ServiceOfferingController {
     @GetMapping("/services")
     @Operation(summary = "Pesquisar serviços com filtros e paginação")
     public ResponseEntity<Page<ServiceOfferingResponse>> list(
-            @RequestParam(required = false, name = "q") String query,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) BigDecimal minPrice,
-            @RequestParam(required = false) BigDecimal maxPrice,
+            @RequestParam(required = false, name = "q")
+            @Size(max = 200, message = "A pesquisa deve ter no máximo 200 caracteres.")
+            String query,
+            @RequestParam(required = false)
+            @Size(max = 120, message = "A categoria deve ter no máximo 120 caracteres.")
+            String category,
+            @RequestParam(required = false)
+            @Size(max = 100, message = "A cidade deve ter no máximo 100 caracteres.")
+            String city,
+            @RequestParam(required = false)
+            @DecimalMin(value = "0.0", message = "O preço mínimo não pode ser negativo.")
+            @Digits(integer = 10, fraction = 2, message = "O preço mínimo é inválido.")
+            BigDecimal minPrice,
+            @RequestParam(required = false)
+            @DecimalMin(value = "0.0", message = "O preço máximo não pode ser negativo.")
+            @Digits(integer = 10, fraction = 2, message = "O preço máximo é inválido.")
+            BigDecimal maxPrice,
             Pageable pageable
     ) {
         return ResponseEntity.ok(serviceOfferingService.searchPublic(

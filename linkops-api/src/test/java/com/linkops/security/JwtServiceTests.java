@@ -45,4 +45,20 @@ class JwtServiceTests {
         assertThatThrownBy(() -> jwtService.isAccessTokenValid(refreshToken, user))
                 .isInstanceOf(BadCredentialsException.class);
     }
+
+    @Test
+    void shouldRejectUnsafeJwtConfiguration() {
+        assertThatThrownBy(() -> new JwtService(
+                "short-secret", "linkops-test", 60_000, 120_000
+        )).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("32 bytes");
+
+        assertThatThrownBy(() -> new JwtService(
+                "test-secret-with-at-least-thirty-two-bytes",
+                "linkops-test",
+                120_000,
+                60_000
+        )).isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("refresh token");
+    }
 }

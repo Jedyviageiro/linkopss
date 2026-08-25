@@ -30,7 +30,7 @@ services:
       DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-linkops}
       DATABASE_USERNAME: ${POSTGRES_USER:-linkops}
       DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-linkops}
-      JWT_SECRET: ${JWT_SECRET:-linkops-docker-development-secret-change-me-32-bytes}
+      JWT_SECRET: ${JWT_SECRET:?Defina JWT_SECRET com pelo menos 32 bytes}
       JWT_ISSUER: ${JWT_ISSUER:-linkops-api}
       JWT_ACCESS_EXPIRATION: ${JWT_ACCESS_EXPIRATION:-900000}
       JWT_REFRESH_EXPIRATION: ${JWT_REFRESH_EXPIRATION:-604800000}

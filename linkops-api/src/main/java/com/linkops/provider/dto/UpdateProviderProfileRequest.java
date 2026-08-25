@@ -3,6 +3,7 @@ package com.linkops.provider.dto;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
@@ -11,7 +12,7 @@ public record UpdateProviderProfileRequest(
         @Size(max = 4000, message = "A biografia deve ter no máximo 4000 caracteres.")
         String bio,
 
-        @Size(max = 2048, message = "O endereço da imagem é demasiado longo.")
+        @Null(message = "Utilize o endpoint de upload para definir a imagem do perfil.")
         String profileImageUrl,
 
         @Pattern(regexp = ".*\\S.*", message = "A cidade não pode estar vazia.")

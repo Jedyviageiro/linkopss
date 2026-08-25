@@ -1,5 +1,6 @@
 package com.linkops.security;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.linkops.user.domain.User;
 import com.linkops.user.domain.UserRole;
 import com.linkops.user.domain.UserStatus;
@@ -14,6 +15,7 @@ import java.util.UUID;
 public record AuthenticatedUser(
         UUID id,
         String email,
+        @JsonIgnore
         String passwordHash,
         UserRole role,
         UserStatus status
@@ -35,6 +37,7 @@ public record AuthenticatedUser(
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return passwordHash;
     }
