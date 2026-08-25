@@ -11,6 +11,7 @@ import com.linkops.provider.dto.CreateProviderProfileRequest;
 import com.linkops.provider.dto.ProviderResponse;
 import com.linkops.provider.dto.UpdateProviderProfileRequest;
 import com.linkops.provider.repository.ProviderProfileRepository;
+import com.linkops.notification.service.NotificationService;
 import com.linkops.user.domain.User;
 import com.linkops.user.domain.UserRole;
 import com.linkops.user.repository.UserRepository;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+import java.time.Instant;
 
 @Service
 public class ProviderService {
@@ -35,15 +37,18 @@ public class ProviderService {
     private final ProviderProfileRepository providerProfileRepository;
     private final UserRepository userRepository;
     private final LocationService locationService;
+    private final NotificationService notificationService;
 
     public ProviderService(
             ProviderProfileRepository providerProfileRepository,
             UserRepository userRepository,
-            LocationService locationService
+            LocationService locationService,
+            NotificationService notificationService
     ) {
         this.providerProfileRepository = providerProfileRepository;
         this.userRepository = userRepository;
         this.locationService = locationService;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -141,13 +146,52 @@ public class ProviderService {
     }
 
     @Transactional
-    public ProviderResponse verify(UUID profileId) {
-        ProviderProfile profile = providerProfileRepository.findById(profileId)
+    public ProviderResponse requestVerification(UUID userId) {
+        ProviderProfile profile = findByUserId(userId);
+        profile.requestVerification(Instant.now());
+        return ProviderResponse.from(profile);
+    }
+
+    @Transactional
+    public ProviderResponse verify(UUID administratorId, UUID profileId) {
+        User administrator = findUser(administratorId);
+        ProviderProfile profile = findProfile(profileId);
+        profile.verify(administrator, Instant.now());
+        notificationService.providerVerified(profile);
+        return ProviderResponse.from(profile);
+    }
+
+    @Transactional
+    public ProviderResponse rejectVerification(
+            UUID administratorId,
+            UUID profileId,
+            String reason
+    ) {
+        User administrator = findUser(administratorId);
+        ProviderProfile profile = findProfile(profileId);
+        profile.rejectVerification(administrator, reason, Instant.now());
+        notificationService.providerVerificationRejected(profile);
+        return ProviderResponse.from(profile);
+    }
+
+    @Transactional
+    public ProviderResponse revokeVerification(
+            UUID administratorId,
+            UUID profileId,
+            String reason
+    ) {
+        User administrator = findUser(administratorId);
+        ProviderProfile profile = findProfile(profileId);
+        profile.revokeVerification(administrator, reason, Instant.now());
+        notificationService.providerVerificationRevoked(profile);
+        return ProviderResponse.from(profile);
+    }
+
+    private ProviderProfile findProfile(UUID profileId) {
+        return providerProfileRepository.findById(profileId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Perfil de prestador não encontrado."
                 ));
-        profile.verify();
-        return ProviderResponse.from(profile);
     }
 
     private User findUser(UUID userId) {

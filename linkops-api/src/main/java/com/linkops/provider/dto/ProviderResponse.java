@@ -2,6 +2,7 @@ package com.linkops.provider.dto;
 
 import com.linkops.provider.domain.ProviderProfile;
 import com.linkops.provider.domain.ProviderStatus;
+import com.linkops.provider.domain.ProviderVerificationStatus;
 import com.linkops.location.dto.LocationResponse;
 
 import java.math.BigDecimal;
@@ -22,6 +23,11 @@ public record ProviderResponse(
         BigDecimal longitude,
         LocationResponse location,
         boolean verified,
+        ProviderVerificationStatus verificationStatus,
+        Instant verificationRequestedAt,
+        Instant verificationReviewedAt,
+        UUID verificationReviewedBy,
+        String verificationNote,
         BigDecimal averageRating,
         int completedJobs,
         ProviderStatus status,
@@ -43,6 +49,13 @@ public record ProviderResponse(
                         profile.getCity(), profile.getLatitude(), profile.getLongitude()
                 ),
                 profile.isVerified(),
+                profile.getVerificationStatus(),
+                profile.getVerificationRequestedAt(),
+                profile.getVerificationReviewedAt(),
+                profile.getVerificationReviewedBy() == null
+                        ? null
+                        : profile.getVerificationReviewedBy().getId(),
+                profile.getVerificationNote(),
                 profile.getAverageRating(),
                 profile.getCompletedJobs(),
                 profile.getStatus(),

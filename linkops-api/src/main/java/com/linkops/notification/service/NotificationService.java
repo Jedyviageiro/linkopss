@@ -8,6 +8,7 @@ import com.linkops.notification.domain.NotificationType;
 import com.linkops.notification.dto.NotificationResponse;
 import com.linkops.notification.repository.NotificationRepository;
 import com.linkops.review.domain.Review;
+import com.linkops.provider.domain.ProviderProfile;
 import com.linkops.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -95,6 +96,41 @@ public class NotificationService {
                 fullName(review.getClient()) + " avaliou o seu serviço com "
                         + review.getRating() + " de 5 estrelas.",
                 review.getId()
+        );
+    }
+
+    @Transactional
+    public void providerVerified(ProviderProfile profile) {
+        create(
+                profile.getUser(),
+                NotificationType.PROVIDER_VERIFIED,
+                "Perfil verificado",
+                "O seu perfil profissional foi verificado pela equipa LinkOps.",
+                profile.getId()
+        );
+    }
+
+    @Transactional
+    public void providerVerificationRejected(ProviderProfile profile) {
+        create(
+                profile.getUser(),
+                NotificationType.PROVIDER_VERIFICATION_REJECTED,
+                "Verificação não aprovada",
+                "O pedido de verificação não foi aprovado. Motivo: "
+                        + profile.getVerificationNote(),
+                profile.getId()
+        );
+    }
+
+    @Transactional
+    public void providerVerificationRevoked(ProviderProfile profile) {
+        create(
+                profile.getUser(),
+                NotificationType.PROVIDER_VERIFICATION_REVOKED,
+                "Verificação revogada",
+                "A verificação do seu perfil foi revogada. Motivo: "
+                        + profile.getVerificationNote(),
+                profile.getId()
         );
     }
 

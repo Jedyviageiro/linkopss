@@ -77,6 +77,18 @@ public class ProviderController {
         );
     }
 
+    @PostMapping("/me/verification")
+    @Operation(summary = "Solicitar verificação do perfil profissional")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('PROVIDER')")
+    public ResponseEntity<ProviderResponse> requestVerification(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser
+    ) {
+        return ResponseEntity.ok(
+                providerService.requestVerification(authenticatedUser.id())
+        );
+    }
+
     @GetMapping("/{id}")
     @Operation(summary = "Consultar o perfil público de um prestador")
     public ResponseEntity<ProviderResponse> getPublicProfile(@PathVariable UUID id) {

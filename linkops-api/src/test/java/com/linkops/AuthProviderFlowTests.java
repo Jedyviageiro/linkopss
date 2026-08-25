@@ -84,6 +84,13 @@ class AuthProviderFlowTests {
                 "$.id"
         );
 
+        mockMvc.perform(post("/providers/me/verification")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(
+                        "Adicione uma biografia e uma imagem de perfil antes de solicitar a verificação."
+                ));
+
         mockMvc.perform(get("/providers/{id}", profileId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.city").value("Maputo"));

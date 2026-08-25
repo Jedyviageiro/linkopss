@@ -4,6 +4,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.linkops.user.domain.User;
 import com.linkops.user.domain.UserRole;
 import com.linkops.user.repository.UserRepository;
+import com.linkops.provider.repository.ProviderProfileRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,6 +41,9 @@ class AdministrationOpenApiTests {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ProviderProfileRepository providerProfileRepository;
+
     @Test
     void shouldAllowOnlyAdminToControlPlatformResources() throws Exception {
         User admin = userRepository.saveAndFlush(new User(
@@ -56,6 +60,14 @@ class AdministrationOpenApiTests {
                 "admin.provider@linkops.local", "Paulo", "Prestador", "PROVIDER"
         );
         String profileId = createProviderProfile(provider.token());
+        providerProfileRepository.findById(java.util.UUID.fromString(profileId))
+                .orElseThrow()
+                .updateProfileImageUrl("https://res.cloudinary.com/linkops/provider.jpg");
+        mockMvc.perform(post("/providers/me/verification")
+                        .header(HttpHeaders.AUTHORIZATION, bearer(provider.token())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.verified").value(false))
+                .andExpect(jsonPath("$.verificationStatus").value("PENDING"));
         String serviceId = createService(provider.token());
         Registration client = register(
                 "admin.client@linkops.local", "Clara", "Cliente", "CLIENT"
@@ -73,6 +85,41 @@ class AdministrationOpenApiTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(3));
 
+        mockMvc.perform(patch("/admin/providers/{id}/verify", profileId)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(adminToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.verified").value(true))
+                .andExpect(jsonPath("$.verificationStatus").value("VERIFIED"))
+                .andExpect(jsonPath("$.verificationReviewedBy").value(admin.getId().toString()));
+
+        mockMvc.perform(patch("/admin/providers/{id}/verify", profileId)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(adminToken)))
+                .andExpect(status().isConflict());
+
+        mockMvc.perform(patch("/admin/providers/{id}/revoke-verification", profileId)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(adminToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"reason\":\"Documento expirado\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.verificationStatus").value("REJECTED"))
+                .andExpect(jsonPath("$.verified").value(false));
+
+        mockMvc.perform(post("/providers/me/verification")
+                        .header(HttpHeaders.AUTHORIZATION, bearer(provider.token())))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.verificationStatus").value("PENDING"));
+
+        mockMvc.perform(patch("/admin/providers/{id}/reject-verification", profileId)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(adminToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"reason\":\"Imagem pouco legível\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.verificationStatus").value("REJECTED"))
+                .andExpect(jsonPath("$.verificationNote").value("Imagem pouco legível"));
+
+        mockMvc.perform(post("/providers/me/verification")
+                        .header(HttpHeaders.AUTHORIZATION, bearer(provider.token())))
+                .andExpect(status().isOk());
         mockMvc.perform(patch("/admin/providers/{id}/verify", profileId)
                         .header(HttpHeaders.AUTHORIZATION, bearer(adminToken)))
                 .andExpect(status().isOk())
@@ -197,7 +244,7 @@ class AdministrationOpenApiTests {
         MvcResult result = mockMvc.perform(post("/providers/profile")
                         .header(HttpHeaders.AUTHORIZATION, bearer(token))
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"city\":\"Maputo\"}"))
+                        .content("{\"city\":\"Maputo\",\"bio\":\"Profissional com experiência comprovada.\"}"))
                 .andExpect(status().isCreated())
                 .andReturn();
         return JsonPath.read(result.getResponse().getContentAsString(), "$.id");
