@@ -1,1 +1,49 @@
+# Environment and local secrets
 .env
+.env.*
+!.env.example
+!**/.env.example
+**/application-local.yml
+**/application-local.yaml
+
+# Java / Maven
+**/target/
+*.class
+*.jar.original
+.flattened-pom.xml
+
+# Node / Vue / Vite
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/coverage/
+**/.vite/
+**/.cache/
+**/*.tsbuildinfo
+**/.eslintcache
+
+# Test and browser tooling
+**/playwright-report/
+**/test-results/
+**/cypress/videos/
+**/cypress/screenshots/
+**/__screenshots__/
+**/.nyc_output/
+
+# Logs and temporary files
+*.log
+*.log.*
+logs/
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
+
+# IDEs and operating systems
+**/.idea/
+**/.vscode/*
+!**/.vscode/extensions.json
+.DS_Store
+Thumbs.db
+Desktop.ini
