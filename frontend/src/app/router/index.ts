@@ -18,7 +18,7 @@ export const router = createRouter({
       path: '/',
       component: () => import('@/app/layouts/AppLayout.vue'),
       children: [
-        { path: '', name: 'home', component: () => import('@/app/views/HomeView.vue') },
+        { path: '', redirect: { name: 'login' } },
         {
           path: 'services',
           name: 'services',
