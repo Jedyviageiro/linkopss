@@ -36,65 +36,58 @@ async function submit() {
   }
 }
 
-function showGoogleUnavailable() {
-  errorMessage.value = 'O login com Google ainda não está disponível.'
-}
 </script>
 
 <template>
-  <main class="grid min-h-screen grid-cols-[minmax(390px,46.5%)_1fr] bg-white text-[#111713] max-[860px]:grid-cols-1">
+  <main class="flex min-h-screen items-center justify-center bg-soft-background p-2 font-sans text-deep-navy">
+    <div class="grid h-[min(580px,calc(100vh-32px))] min-h-[520px] w-full max-w-[900px] grid-cols-[46.5%_53.5%] overflow-hidden rounded-[10px] border border-linkops-slate-200 bg-white shadow-[0_4px_22px_rgba(15,23,42,0.06)] max-[860px]:h-auto max-[860px]:min-h-0 max-[860px]:grid-cols-1">
     <section
-      class="relative min-h-screen overflow-hidden bg-[#111] max-[860px]:min-h-[330px] max-[480px]:min-h-[275px]"
+      class="relative h-full overflow-hidden bg-deep-navy max-[860px]:h-[290px]"
       aria-label="LinkOps para prestadores de serviços"
     >
       <img
         :src="loginHero"
         alt="Prestador de serviços sorrindo enquanto utiliza um tablet"
-        class="absolute inset-0 size-full object-cover object-[center_47%] max-[860px]:object-[center_38%]"
+        class="absolute inset-0 size-full object-cover object-[center_30%]"
       />
       <div
-        class="absolute inset-0 bg-[linear-gradient(180deg,rgba(6,9,7,0.08)_0%,rgba(6,9,7,0.06)_42%,rgba(4,8,5,0.76)_100%)]"
+        class="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,12,10,0.15)_0%,rgba(10,12,10,0.15)_45%,rgba(8,10,8,0.86)_100%)]"
         aria-hidden="true"
       ></div>
       <div
-        class="absolute bottom-[clamp(54px,12vh,116px)] left-[clamp(28px,4vw,64px)] z-10 max-w-[430px] pr-7 text-white max-[860px]:bottom-[34px] max-[480px]:bottom-[25px] max-[480px]:left-[22px]"
+        class="absolute top-[36%] left-7 z-10 max-w-[310px] pr-5 text-white min-[1100px]:left-12 max-[860px]:top-auto max-[860px]:bottom-7 max-[860px]:left-7"
       >
-        <h1
-          class="mb-5 text-[clamp(36px,3.65vw,54px)] leading-[1.08] font-[750] tracking-[-0.035em] max-[860px]:mb-3 max-[860px]:text-[34px] max-[480px]:text-[29px]"
-        >
+        <h1 class="mb-6 text-h3 font-semibold tracking-[-0.02em] max-[860px]:mb-4">
           Conecte.<br />Gerencie.<br />Cresça.
         </h1>
-        <p class="m-0 text-[clamp(14px,1.15vw,17px)] leading-[1.6] text-white/90 max-[860px]:text-sm">
-          LinkOps conecta clientes e prestadores de serviços locais<br class="max-[480px]:hidden" />
-          com facilidade e segurança.
+        <p class="m-0 max-w-[200px] text-caption text-white/90">
+          LinkOps conecta clientes e prestadores de serviços locais com facilidade e segurança.
         </p>
       </div>
     </section>
 
-    <section
-      class="flex min-w-0 items-center justify-center px-[clamp(34px,7vw,112px)] py-[42px] max-[860px]:px-6 max-[860px]:pt-[42px] max-[860px]:pb-14 max-[480px]:px-5"
-    >
+    <section class="flex min-w-0 items-start justify-center px-9 py-8 max-[860px]:px-6 max-[860px]:py-9 max-[480px]:px-5">
       <div class="w-full max-w-[430px]">
         <RouterLink
           to="/"
-          class="mb-[33px] inline-block text-[22px] leading-none font-extrabold tracking-[-0.045em] text-[#161b18] no-underline hover:no-underline max-[480px]:mb-7"
+          class="mb-3 inline-block text-h5 font-medium tracking-[-0.02em] text-deep-navy no-underline hover:no-underline"
           aria-label="LinkOps — página inicial"
         >
-          <span class="text-[#149447]">Link</span>Ops
+          <span class="text-linkops-green">Link</span>Ops
         </RouterLink>
 
-        <header class="mb-7">
-          <h2 class="mb-2 text-[25px] leading-[1.2] font-[750] tracking-[-0.025em]">Entrar na sua conta</h2>
-          <p class="m-0 text-sm leading-[1.5] text-[#6d756f]">Bem-vindo de volta! Faça login para continuar.</p>
+        <header class="mb-5">
+          <h2 class="mb-1.5 text-h4 font-semibold tracking-[-0.01em]">Entrar na sua conta</h2>
+          <p class="m-0 text-caption text-linkops-slate-500">Bem-vindo de volta! Faça login para continuar.</p>
         </header>
 
         <form @submit.prevent="submit">
-          <div class="mb-[19px]">
-            <label for="login-email" class="!mb-[7px] !block text-[13px] !font-bold">E-mail ou telefone</label>
+          <div class="mb-3.5">
+            <label for="login-email" class="!mb-1.5 !block text-xs !font-semibold">E-mail ou telefone</label>
             <div class="relative flex items-center">
-              <svg class="pointer-events-none absolute left-[13px] size-[17px] text-[#8b938e]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <circle cx="12" cy="8" r="3.25" stroke="currentColor" stroke-width="1.7" />
-                <path d="M5.5 19a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+              <svg class="pointer-events-none absolute left-[13px] size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7" />
+                <path d="m4.5 7 6.2 5a2 2 0 0 0 2.6 0l6.2-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
               <input
                 id="login-email"
@@ -104,17 +97,17 @@ function showGoogleUnavailable() {
                 autocomplete="username"
                 placeholder="Digite seu e-mail ou número de telefone"
                 required
-                class="!h-[45px] !w-full !rounded-md !border-[#dfe4e0] !bg-white !py-0 !pr-[42px] !pl-10 text-[13.5px] text-[#111713] outline-none placeholder:text-[#9ba29e] focus:!border-[#149447] focus:!outline-none focus:!ring-[3px] focus:!ring-[#149447]/10"
+                class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy outline-none placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0"
               />
             </div>
           </div>
 
-          <div class="mb-[19px]">
-            <label for="login-password" class="!mb-[7px] !block text-[13px] !font-bold">Senha</label>
+          <div class="mb-3.5">
+            <label for="login-password" class="!mb-1.5 !block text-xs !font-semibold">Senha</label>
             <div class="relative flex items-center">
-              <svg class="pointer-events-none absolute left-[13px] size-[17px] text-[#8b938e]" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect x="4.5" y="10.5" width="15" height="9.5" rx="2" stroke="currentColor" stroke-width="1.7" />
-                <path d="M8 10.5v-3a4 4 0 1 1 8 0v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+              <svg class="pointer-events-none absolute left-[13px] size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="4" y="10" width="16" height="11" rx="2.5" stroke="currentColor" stroke-width="1.7" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3M12 14.5v2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
               </svg>
               <input
                 id="login-password"
@@ -123,11 +116,11 @@ function showGoogleUnavailable() {
                 autocomplete="current-password"
                 placeholder="Digite sua senha"
                 required
-                class="!h-[45px] !w-full !rounded-md !border-[#dfe4e0] !bg-white !py-0 !pr-[42px] !pl-10 text-[13.5px] text-[#111713] outline-none placeholder:text-[#9ba29e] focus:!border-[#149447] focus:!outline-none focus:!ring-[3px] focus:!ring-[#149447]/10"
+                class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-10 !pl-[38px] text-[13px] leading-5 text-deep-navy outline-none placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0"
               />
               <button
                 type="button"
-                class="absolute right-3 !min-h-6 !w-6 !rounded-none !bg-transparent !p-[3px] !text-[#858d88] hover:!text-[#4f5752] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#149447]"
+                class="absolute right-[13px] !min-h-[18px] !w-[18px] !rounded-none !bg-transparent !p-0 !text-linkops-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-linkops-green"
                 :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
                 :aria-pressed="showPassword"
                 @click="showPassword = !showPassword"
@@ -143,34 +136,34 @@ function showGoogleUnavailable() {
             </div>
           </div>
 
-          <div class="mt-0.5 mb-[23px] flex items-center justify-between">
-            <label class="!inline-flex !cursor-pointer !flex-row !items-center !gap-[7px] text-[12.5px] !font-medium text-[#525b55]">
-              <input v-model="rememberMe" type="checkbox" class="!m-0 !size-3.5 !rounded !p-0 accent-[#149447]" />
+          <div class="mt-0.5 mb-[18px] flex items-center justify-between">
+            <label class="!inline-flex !cursor-pointer !flex-row !items-center !gap-1.5 text-[11px] !font-normal text-linkops-slate-700">
+              <input v-model="rememberMe" type="checkbox" class="!m-0 !size-3.5 !rounded !p-0 accent-linkops-green" />
               <span>Lembrar-me</span>
             </label>
-            <RouterLink to="/forgot-password" class="text-[12.5px] font-semibold text-[#149447]">Esqueceu sua senha?</RouterLink>
+            <RouterLink to="/forgot-password" class="text-[11px] font-medium text-linkops-green">Esqueceu sua senha?</RouterLink>
           </div>
 
-          <p v-if="errorMessage" class="mt-[-9px] mb-3.5 rounded-md bg-red-50 px-[11px] py-[9px] text-[12.5px] leading-[1.4] text-[#b42318]" role="alert">
+          <p v-if="errorMessage" class="mt-[-8px] mb-3 rounded-md bg-soft-background px-3 py-2 text-caption font-medium text-linkops-amber" role="alert">
             {{ errorMessage }}
           </p>
 
           <button
-            class="!h-11 !min-h-11 !w-full !rounded-md !bg-[#149447] text-[13.5px] !font-bold !text-white hover:!bg-[#0e7b38]"
+            class="!h-[38px] !min-h-[38px] !w-full !rounded-md !bg-linkops-green text-body-base !font-semibold !text-white hover:!bg-deep-navy"
             type="submit"
             :disabled="auth.loading"
           >
             {{ auth.loading ? 'Entrando…' : 'Entrar' }}
           </button>
 
-          <div class="my-[18px] flex items-center gap-[13px] before:h-px before:flex-1 before:bg-[#eaeeeb] before:content-[''] after:h-px after:flex-1 after:bg-[#eaeeeb] after:content-['']">
-            <span class="whitespace-nowrap text-[11.5px] text-[#7a827d]">ou continue com</span>
+          <div class="my-3 flex items-center gap-3 before:h-px before:flex-1 before:bg-linkops-slate-200 before:content-[''] after:h-px after:flex-1 after:bg-linkops-slate-200 after:content-['']">
+            <span class="whitespace-nowrap text-caption text-linkops-slate-500">ou continue com</span>
           </div>
 
           <button
-            class="!h-11 !min-h-11 !w-full !gap-2.5 !rounded-md !border !border-[#dfe4e0] !bg-white text-[13.5px] !font-bold !text-[#202521] hover:!border-[#cbd1cd] hover:!bg-[#fafbfa]"
+            class="!h-[38px] !min-h-[38px] !w-full !gap-2.5 !rounded-md !border !border-linkops-slate-200 !bg-white text-body-base !font-semibold !text-linkops-slate-900 hover:!border-linkops-slate-300 hover:!bg-soft-background"
             type="button"
-            @click="showGoogleUnavailable"
+            aria-label="Continuar com Google (indisponível)"
           >
             <svg class="size-[17px]" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M23.5 12.3c0-.9-.1-1.7-.2-2.5H12v4.6h6.5a5.5 5.5 0 0 1-2.4 3.6v3h3.9c2.2-2.1 3.5-5.1 3.5-8.7Z" fill="#4285f4" />
@@ -181,12 +174,14 @@ function showGoogleUnavailable() {
             Continuar com Google
           </button>
 
-          <div class="mt-[29px] flex flex-col gap-2 text-center">
-            <p class="m-0 text-[12.5px] text-[#626a65]">Não tem uma conta? <RouterLink to="/register" class="font-bold text-[#149447]">Criar conta</RouterLink></p>
-            <p class="m-0 text-[12.5px] text-[#626a65]">Quer oferecer serviços? <RouterLink to="/register?role=PROVIDER" class="font-bold text-[#149447]">Sou um prestador de serviços</RouterLink></p>
+          <div class="mt-8 flex flex-col gap-2 text-center text-body-small text-linkops-slate-700">
+            <p class="m-0">Não tem uma conta? <RouterLink to="/register" class="font-semibold text-linkops-green">Criar conta</RouterLink></p>
+            <p class="m-0">Quer oferecer serviços? <RouterLink to="/register?role=PROVIDER" class="font-semibold text-linkops-green">Sou um prestador de serviços</RouterLink></p>
           </div>
+
         </form>
       </div>
     </section>
+    </div>
   </main>
 </template>
