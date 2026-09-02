@@ -42,9 +42,33 @@ services:
       interval: 10s
       timeout: 5s
       retries: 6
-      start_period: 40s
+      start_period: 180s
+    init: true
+    restart: unless-stopped
+
+  frontend:
+    image: node:24-alpine
+    working_dir: /app
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8081/api/v1}
+    command: ["sh", "-c", "[ -x node_modules/.bin/vite ] || npm ci; npm run dev -- --host 0.0.0.0"]
+    ports:
+      - "${FRONTEND_PORT:-5174}:5173"
+    volumes:
+      - ./frontend:/app
+      - linkops_frontend_node_modules:/app/node_modules
+    depends_on:
+      api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:5173"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 240s
     init: true
     restart: unless-stopped
 
 volumes:
   linkops_postgres_data:
+  linkops_frontend_node_modules:

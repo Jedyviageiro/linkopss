@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth-store'
 import { getErrorMessage } from '@/shared/api/api-error'
 import type { RegisterRequest } from '../types/auth'
 
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
 const errorMessage = ref('')
 const form = reactive<RegisterRequest>({
@@ -15,7 +16,7 @@ const form = reactive<RegisterRequest>({
   phone: '',
   password: '',
   confirmPassword: '',
-  role: 'CLIENT',
+  role: route.query.role === 'PROVIDER' ? 'PROVIDER' : 'CLIENT',
 })
 
 async function submit() {
