@@ -41,3 +41,10 @@ than entered text; use Slate 500 to distinguish them.
 Default buttons use 15px / 20px at weight 600. Large buttons use 16px / 24px,
 and small buttons use 14px / 20px, both at weight 600. Button labels use
 sentence case and primary actions must never use regular weight.
+
+## Spacing
+
+Use a 4px base spacing scale. Prefer 4, 8, 12, 16, 20, 24, and 32px values;
+do not introduce arbitrary visual gaps. Use 4px between a field label and its
+control, 12px between repeated fields, 16px between form sections, and 12px
+around dividers. Keep the same spacing for repeated controls in a form.

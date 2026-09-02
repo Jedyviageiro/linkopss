@@ -39,10 +39,10 @@ async function submit() {
 </script>
 
 <template>
-  <main class="flex min-h-screen items-center justify-center bg-soft-background p-2 font-sans text-deep-navy">
-    <div class="grid h-[min(580px,calc(100vh-32px))] min-h-[520px] w-full max-w-[900px] grid-cols-[46.5%_53.5%] overflow-hidden rounded-[10px] border border-linkops-slate-200 bg-white shadow-[0_4px_22px_rgba(15,23,42,0.06)] max-[860px]:h-auto max-[860px]:min-h-0 max-[860px]:grid-cols-1">
+  <main class="flex min-h-screen items-center justify-center bg-soft-background p-3 font-sans text-deep-navy">
+    <div class="grid h-[min(600px,calc(100vh-24px))] min-h-[560px] w-full max-w-[1000px] grid-cols-[43%_57%] overflow-hidden rounded-[10px] border border-linkops-slate-200 bg-white shadow-[0_4px_22px_rgba(15,23,42,0.06)] max-[900px]:h-auto max-[900px]:min-h-0 max-[900px]:grid-cols-1">
     <section
-      class="relative h-full overflow-hidden bg-deep-navy max-[860px]:h-[290px]"
+      class="relative h-full overflow-hidden bg-deep-navy max-[900px]:h-[280px]"
       aria-label="LinkOps para prestadores de serviços"
     >
       <img
@@ -55,9 +55,9 @@ async function submit() {
         aria-hidden="true"
       ></div>
       <div
-        class="absolute top-[36%] left-7 z-10 max-w-[310px] pr-5 text-white min-[1100px]:left-12 max-[860px]:top-auto max-[860px]:bottom-7 max-[860px]:left-7"
+        class="absolute top-[36%] left-7 z-10 max-w-[310px] pr-5 text-white min-[1100px]:left-12 max-[900px]:top-auto max-[900px]:bottom-7 max-[900px]:left-7"
       >
-        <h1 class="mb-6 text-h3 font-semibold tracking-[-0.02em] max-[860px]:mb-4">
+        <h1 class="mb-6 text-h3 font-semibold tracking-[-0.02em] max-[900px]:mb-4">
           Conecte.<br />Gerencie.<br />Cresça.
         </h1>
         <p class="m-0 max-w-[200px] text-caption text-white/90">
@@ -66,7 +66,7 @@ async function submit() {
       </div>
     </section>
 
-    <section class="flex min-w-0 items-start justify-center px-9 py-8 max-[860px]:px-6 max-[860px]:py-9 max-[480px]:px-5">
+    <section class="flex min-w-0 items-start justify-center px-7 py-6 max-[900px]:px-6 max-[900px]:py-6 max-[480px]:px-5">
       <div class="w-full max-w-[430px]">
         <RouterLink
           to="/"
@@ -76,13 +76,13 @@ async function submit() {
           <span class="text-linkops-green">Link</span>Ops
         </RouterLink>
 
-        <header class="mb-5">
+        <header class="mb-4">
           <h2 class="mb-1.5 text-h4 font-semibold tracking-[-0.01em]">Entrar na sua conta</h2>
           <p class="m-0 text-caption text-linkops-slate-500">Bem-vindo de volta! Faça login para continuar.</p>
         </header>
 
         <form @submit.prevent="submit">
-          <div class="mb-3.5">
+          <div class="mb-3">
             <label for="login-email" class="!mb-1.5 !block text-xs !font-semibold">E-mail ou telefone</label>
             <div class="relative flex items-center">
               <svg class="pointer-events-none absolute left-[13px] size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -102,7 +102,7 @@ async function submit() {
             </div>
           </div>
 
-          <div class="mb-3.5">
+          <div class="mb-3">
             <label for="login-password" class="!mb-1.5 !block text-xs !font-semibold">Senha</label>
             <div class="relative flex items-center">
               <svg class="pointer-events-none absolute left-[13px] size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -136,7 +136,7 @@ async function submit() {
             </div>
           </div>
 
-          <div class="mt-0.5 mb-[18px] flex items-center justify-between">
+          <div class="mb-4 flex items-center justify-between">
             <label class="!inline-flex !cursor-pointer !flex-row !items-center !gap-1.5 text-[11px] !font-normal text-linkops-slate-700">
               <input v-model="rememberMe" type="checkbox" class="!m-0 !size-3.5 !rounded !p-0 accent-linkops-green" />
               <span>Lembrar-me</span>
