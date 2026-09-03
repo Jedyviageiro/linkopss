@@ -72,7 +72,7 @@ async function submit() {
   try {
     const user = await auth.register(form)
     notifications.success('Sua conta foi criada com sucesso.', 'Conta criada!')
-    await router.replace(user.role === 'PROVIDER' ? '/provider/profile' : '/dashboard')
+    await router.replace(user.role === 'PROVIDER' ? '/provider/profile' : '/onboarding/client')
   } catch (error) {
     notifications.error(getRegistrationErrorMessage(error), 'Não conseguimos criar sua conta')
   }

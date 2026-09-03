@@ -57,6 +57,12 @@ export const router = createRouter({
     },
     { path: '/login', name: 'login', component: () => import('@/features/auth/views/LoginView.vue'), meta: { guestOnly: true } },
     { path: '/register', name: 'register', component: () => import('@/features/auth/views/RegisterView.vue'), meta: { guestOnly: true } },
+    {
+      path: '/onboarding/client',
+      name: 'client-onboarding',
+      component: () => import('@/features/onboarding/views/ClientOnboardingView.vue'),
+      meta: { requiresAuth: true, roles: ['CLIENT'] },
+    },
     { path: '/forgot-password', name: 'forgot-password', component: () => import('@/features/auth/views/ForgotPasswordView.vue'), meta: { guestOnly: true } },
     { path: '/reset-password', name: 'reset-password', component: () => import('@/features/auth/views/ResetPasswordView.vue') },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('@/app/views/NotFoundView.vue') },
