@@ -58,7 +58,7 @@ export const router = createRouter({
     { path: '/login', name: 'login', component: () => import('@/features/auth/views/LoginView.vue'), meta: { guestOnly: true } },
     { path: '/register', name: 'register', component: () => import('@/features/auth/views/RegisterView.vue'), meta: { guestOnly: true } },
     { path: '/forgot-password', name: 'forgot-password', component: () => import('@/features/auth/views/ForgotPasswordView.vue'), meta: { guestOnly: true } },
-    { path: '/reset-password', name: 'reset-password', component: () => import('@/features/auth/views/ResetPasswordView.vue'), meta: { guestOnly: true } },
+    { path: '/reset-password', name: 'reset-password', component: () => import('@/features/auth/views/ResetPasswordView.vue') },
     { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('@/app/views/NotFoundView.vue') },
   ],
   scrollBehavior: () => ({ top: 0 }),

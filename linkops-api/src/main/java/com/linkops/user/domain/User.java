@@ -90,6 +90,10 @@ public class User extends BaseEntity {
         this.tokenVersion++;
     }
 
+    public void invalidateTokens() {
+        this.tokenVersion++;
+    }
+
     private static String normalizeRequired(String value) {
         if (value == null || value.isBlank()) {
             throw new IllegalArgumentException("O valor informado é obrigatório.");

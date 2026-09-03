@@ -32,7 +32,7 @@ class AuthProviderFlowTests {
                   "firstName": "Ana",
                   "lastName": "Matola",
                   "email": "provider.flow.test@linkops.local",
-                  "phone": "+258840000001",
+                  "phone": "840000001",
                   "password": "Senha-segura-123",
                   "confirmPassword": "Senha-segura-123",
                   "role": "PROVIDER"
@@ -120,12 +120,12 @@ class AuthProviderFlowTests {
                         .content("""
                                 {
                                   "firstName":"Ana Maria",
-                                  "phone":"+258850000001"
+                                  "phone":"850000001"
                                 }
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("Ana Maria"))
-                .andExpect(jsonPath("$.phone").value("+258850000001"));
+                .andExpect(jsonPath("$.phone").value("850000001"));
 
         mockMvc.perform(get("/providers?page=0&size=10"))
                 .andExpect(status().isOk())
@@ -145,6 +145,31 @@ class AuthProviderFlowTests {
         mockMvc.perform(post("/auth/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"refreshToken\":\"" + refreshToken + "\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.accessToken").isNotEmpty())
+                .andExpect(jsonPath("$.refreshToken").isNotEmpty());
+
+        mockMvc.perform(post("/auth/logout")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/users/me")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(post("/auth/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"refreshToken\":\"" + refreshToken + "\"}"))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "email": "provider.flow.test@linkops.local",
+                                  "password": "Senha-segura-123"
+                                }
+                                """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").isNotEmpty())
                 .andExpect(jsonPath("$.refreshToken").isNotEmpty());

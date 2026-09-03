@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class CorsIntegrationTests {
 
-    private static final String DEVELOPMENT_ORIGIN = "http://localhost:5173";
+    private static final String DEVELOPMENT_ORIGIN = "http://localhost:5174";
 
     @Autowired
     private MockMvc mockMvc;

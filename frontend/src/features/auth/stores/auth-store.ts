@@ -28,11 +28,11 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function login(payload: LoginRequest) {
+  async function login(payload: LoginRequest, rememberMe = false) {
     loading.value = true
     try {
       const session = await authApi.login(payload)
-      tokenStorage.set(session.accessToken, session.refreshToken)
+      tokenStorage.set(session.accessToken, session.refreshToken, rememberMe)
       user.value = session.user
       return session.user
     } finally {
@@ -52,9 +52,13 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  function logout() {
-    tokenStorage.clear()
-    user.value = null
+  async function logout() {
+    try {
+      await authApi.logout()
+    } finally {
+      tokenStorage.clear()
+      user.value = null
+    }
   }
 
   return { user, role, initialized, loading, isAuthenticated, initialize, login, register, logout }

@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth-store'
-import { getErrorMessage } from '@/shared/api/api-error'
+import { getRegistrationErrorMessage } from '@/features/auth/errors/auth-error-messages'
+import { useNotificationStore } from '@/shared/notifications/notification-store'
+import { isMozambiqueMobile, sanitizeMozambiqueMobile } from '@/shared/validation/mozambique-phone'
+import { getPasswordValidationMessage } from '@/shared/validation/password'
 import type { RegisterRequest } from '../types/auth'
 import registerHero from '@/assets/photos/man-login-page.png'
 
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
+const notifications = useNotificationStore()
 const fullName = ref('')
 const acceptedTerms = ref(false)
 const showPassword = ref(false)
 const showConfirmPassword = ref(false)
-const errorMessage = ref('')
 const form = reactive<RegisterRequest>({
   firstName: '',
   lastName: '',
@@ -23,13 +26,43 @@ const form = reactive<RegisterRequest>({
   confirmPassword: '',
   role: route.query.role === 'PROVIDER' ? 'PROVIDER' : 'CLIENT',
 })
+const passwordsMismatch = computed(() => (
+  form.confirmPassword.length > 0 && form.password !== form.confirmPassword
+))
+
+function updatePhone(event: Event) {
+  form.phone = sanitizeMozambiqueMobile((event.target as HTMLInputElement).value)
+}
 
 async function submit() {
-  errorMessage.value = ''
   const names = fullName.value.trim().split(/\s+/).filter(Boolean)
 
   if (names.length < 2) {
-    errorMessage.value = 'Digite seu nome e apelido.'
+    notifications.error('Digite seu nome e apelido antes de continuar.', 'Nome incompleto')
+    return
+  }
+
+  if (!isMozambiqueMobile(form.phone ?? '')) {
+    notifications.error(
+      'Use 9 dígitos com um prefixo válido: 82/83, 84/85 ou 86/87.',
+      'Número de telefone inválido',
+    )
+    return
+  }
+
+  if (names[0]!.length > 100 || names.slice(1).join(' ').length > 100) {
+    notifications.error('O nome e o apelido devem ter no máximo 100 caracteres cada.', 'Nome demasiado longo')
+    return
+  }
+
+  if (form.password !== form.confirmPassword) {
+    notifications.error('Digite a mesma senha nos dois campos.', 'As senhas não coincidem')
+    return
+  }
+
+  const passwordValidationMessage = getPasswordValidationMessage(form.password)
+  if (passwordValidationMessage) {
+    notifications.error(passwordValidationMessage, 'Senha inválida')
     return
   }
 
@@ -38,9 +71,10 @@ async function submit() {
 
   try {
     const user = await auth.register(form)
+    notifications.success('Sua conta foi criada com sucesso.', 'Conta criada!')
     await router.replace(user.role === 'PROVIDER' ? '/provider/profile' : '/dashboard')
   } catch (error) {
-    errorMessage.value = getErrorMessage(error)
+    notifications.error(getRegistrationErrorMessage(error), 'Não conseguimos criar sua conta')
   }
 }
 </script>
@@ -73,34 +107,28 @@ async function submit() {
           </header>
 
           <form class="max-h-[452px] w-full min-w-0 overflow-x-hidden overflow-y-auto pr-2 [scrollbar-width:thin] max-[900px]:max-h-none max-[900px]:overflow-y-visible max-[900px]:pr-0" @submit.prevent="submit">
-            <fieldset class="mb-4 grid min-w-0 grid-cols-2 gap-2 border-0 p-0 max-[560px]:grid-cols-1">
+            <fieldset class="mb-4 grid min-w-0 grid-cols-2 gap-3 border-0 p-0 max-[560px]:grid-cols-1">
               <legend class="sr-only">Tipo de conta</legend>
               <label
-                class="relative !block cursor-pointer rounded-md border !p-3 transition-colors"
-                :class="form.role === 'CLIENT' ? 'border-linkops-green bg-soft-background' : 'border-linkops-slate-200 bg-white'"
+                class="relative !flex min-h-[72px] cursor-pointer items-center justify-center rounded-lg border !p-3 text-center transition-colors has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-linkops-green"
+                :class="form.role === 'CLIENT' ? 'border-linkops-green bg-green-50/70 ring-1 ring-linkops-green/20' : 'border-linkops-slate-200 bg-white hover:border-linkops-slate-300'"
               >
-                <input v-model="form.role" class="sr-only" type="radio" value="CLIENT" />
-                <span class="flex items-center gap-1.5 text-[13px] leading-5 font-semibold" :class="form.role === 'CLIENT' ? 'text-linkops-green' : 'text-deep-navy'">
-                  <span class="flex size-3 items-center justify-center rounded-full border-[1.5px]" :class="form.role === 'CLIENT' ? 'border-linkops-green bg-linkops-green' : 'border-linkops-slate-300'">
-                    <span v-if="form.role === 'CLIENT'" class="size-1.5 rounded-full bg-white"></span>
-                  </span>
-                  Sou cliente
+                <input v-model="form.role" class="pointer-events-none absolute !h-px !w-px overflow-hidden !border-0 !p-0 opacity-0 [clip:rect(0,0,0,0)]" type="radio" value="CLIENT" />
+                <span>
+                  <span class="block text-[13px] leading-5 font-semibold text-deep-navy">Sou cliente</span>
+                  <span class="mt-0.5 block text-[11px] leading-4 text-linkops-slate-500">Quero contratar serviços</span>
                 </span>
-                <span class="mt-0.5 block pl-[18px] text-[11px] leading-4 text-linkops-slate-500">Quero contratar serviços</span>
               </label>
 
               <label
-                class="relative !block cursor-pointer rounded-md border !p-3 transition-colors"
-                :class="form.role === 'PROVIDER' ? 'border-linkops-green bg-soft-background' : 'border-linkops-slate-200 bg-white'"
+                class="relative !flex min-h-[72px] cursor-pointer items-center justify-center rounded-lg border !p-3 text-center transition-colors has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-linkops-green"
+                :class="form.role === 'PROVIDER' ? 'border-linkops-green bg-green-50/70 ring-1 ring-linkops-green/20' : 'border-linkops-slate-200 bg-white hover:border-linkops-slate-300'"
               >
-                <input v-model="form.role" class="sr-only" type="radio" value="PROVIDER" />
-                <span class="flex items-center gap-1.5 text-[13px] leading-5 font-semibold" :class="form.role === 'PROVIDER' ? 'text-linkops-green' : 'text-deep-navy'">
-                  <span class="flex size-3 items-center justify-center rounded-full border-[1.5px]" :class="form.role === 'PROVIDER' ? 'border-linkops-green bg-linkops-green' : 'border-linkops-slate-300'">
-                    <span v-if="form.role === 'PROVIDER'" class="size-1.5 rounded-full bg-white"></span>
-                  </span>
-                  Sou prestador de serviços
+                <input v-model="form.role" class="pointer-events-none absolute !h-px !w-px overflow-hidden !border-0 !p-0 opacity-0 [clip:rect(0,0,0,0)]" type="radio" value="PROVIDER" />
+                <span>
+                  <span class="block text-[13px] leading-5 font-semibold text-deep-navy">Sou prestador de serviços</span>
+                  <span class="mt-0.5 block text-[11px] leading-4 text-linkops-slate-500">Quero oferecer meus serviços</span>
                 </span>
-                <span class="mt-0.5 block pl-[18px] text-[11px] leading-4 text-linkops-slate-500">Quero oferecer meus serviços</span>
               </label>
             </fieldset>
 
@@ -122,7 +150,7 @@ async function submit() {
                   <rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7" />
                   <path d="m4.5 7 6.2 5a2 2 0 0 0 2.6 0l6.2-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-                <input id="register-email" v-model.trim="form.email" class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0" type="email" placeholder="Digite seu e-mail" autocomplete="email" required />
+                <input id="register-email" v-model.trim="form.email" class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0" type="email" maxlength="255" placeholder="Digite seu e-mail" autocomplete="email" required />
               </div>
             </div>
 
@@ -133,8 +161,9 @@ async function submit() {
                   <svg class="pointer-events-none absolute left-3 size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="M5 4h3l1.5 4-2 1.5a14 14 0 0 0 7 7l1.5-2L20 16v3a1 1 0 0 1-1 1C10.7 20 4 13.3 4 5a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" />
                   </svg>
-                  <input id="register-phone" v-model.trim="form.phone" class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0" type="tel" placeholder="Digite seu telefone" autocomplete="tel" maxlength="50" />
+                  <input id="register-phone" :value="form.phone" class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0" type="tel" inputmode="numeric" placeholder="Ex.: 841234567" autocomplete="tel-national" maxlength="9" required aria-describedby="register-phone-help" @input="updatePhone" />
                 </div>
+                <p id="register-phone-help" class="mt-1 mb-0 text-[10px] leading-4 text-linkops-slate-500">9 dígitos · mCel/Tmcel 82/83 · Vodacom 84/85 · Movitel 86/87</p>
               </div>
 
               <div class="min-w-0">
@@ -159,19 +188,18 @@ async function submit() {
                   <rect x="4" y="10" width="16" height="11" rx="2.5" stroke="currentColor" stroke-width="1.7" />
                   <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
                 </svg>
-                <input id="register-confirm-password" v-model="form.confirmPassword" :type="showConfirmPassword ? 'text' : 'password'" class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-10 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0" placeholder="Confirme sua senha" autocomplete="new-password" minlength="8" maxlength="72" required />
+                <input id="register-confirm-password" v-model="form.confirmPassword" :type="showConfirmPassword ? 'text' : 'password'" class="!h-[38px] !w-full !rounded-md !bg-white !py-0 !pr-10 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!outline-none focus:!ring-0" :class="passwordsMismatch ? '!border-red-500 focus:!border-red-500' : '!border-linkops-slate-200 focus:!border-linkops-slate-200'" placeholder="Confirme sua senha" autocomplete="new-password" minlength="8" maxlength="72" required :aria-invalid="passwordsMismatch" aria-describedby="register-password-match" />
                 <button type="button" class="absolute right-3 !min-h-[18px] !w-[18px] !rounded-none !bg-transparent !p-0 !text-linkops-slate-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-linkops-green" :aria-label="showConfirmPassword ? 'Ocultar senha' : 'Mostrar senha'" @click="showConfirmPassword = !showConfirmPassword">
                   <svg class="size-[17px]" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7-3.5 7-10.5 7S1.5 12 1.5 12Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" /><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7" /></svg>
                 </button>
               </div>
+              <p v-if="passwordsMismatch" id="register-password-match" class="mt-1 mb-0 text-[10px] leading-4 text-red-600">As senhas não coincidem.</p>
             </div>
 
             <label class="!mb-3 !inline-flex !cursor-pointer !flex-row !items-start !gap-2 !text-[10px] !leading-4 !font-normal text-linkops-slate-700">
               <input v-model="acceptedTerms" class="!mt-0.5 !size-3.5 !shrink-0 !rounded !p-0 accent-linkops-green" type="checkbox" required />
               <span>Concordando com os <a href="#" class="font-semibold text-linkops-green">Termos de Uso</a> e a <a href="#" class="font-semibold text-linkops-green">Política de Privacidade</a></span>
             </label>
-
-            <p v-if="errorMessage" class="mb-3 rounded-md bg-soft-background px-3 py-2 text-caption font-medium text-linkops-amber" role="alert">{{ errorMessage }}</p>
 
             <button class="!h-[38px] !min-h-[38px] !w-full !rounded-md !bg-linkops-green text-body-base !font-semibold !text-white hover:!bg-deep-navy" type="submit" :disabled="auth.loading">
               {{ auth.loading ? 'Criando conta…' : 'Criar conta' }}

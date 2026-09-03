@@ -1,13 +1,27 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/features/auth/stores/auth-store'
+import { useModalStore } from '@/shared/modals/modal-store'
+import { useNotificationStore } from '@/shared/notifications/notification-store'
 
 const auth = useAuthStore()
 const router = useRouter()
+const modals = useModalStore()
+const notifications = useNotificationStore()
 
 async function logout() {
-  auth.logout()
-  await router.push('/')
+  const confirmed = await modals.open({
+    kind: 'warning',
+    title: 'Terminar sessão?',
+    message: 'Você precisará entrar novamente para acessar sua conta.',
+    confirmLabel: 'Sair',
+    cancelLabel: 'Cancelar',
+  })
+  if (!confirmed) return
+
+  await auth.logout()
+  await router.replace({ name: 'login' })
+  notifications.info('Você saiu da sua conta com segurança.', 'Sessão terminada')
 }
 </script>
 

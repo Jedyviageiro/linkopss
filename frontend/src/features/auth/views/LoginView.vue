@@ -2,17 +2,18 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth-store'
-import { getErrorMessage } from '@/shared/api/api-error'
+import { getLoginErrorMessage } from '@/features/auth/errors/auth-error-messages'
+import { useNotificationStore } from '@/shared/notifications/notification-store'
 import loginHero from '@/assets/photos/man-login-page.png'
 
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
+const notifications = useNotificationStore()
 const email = ref('')
 const password = ref('')
 const rememberMe = ref(false)
 const showPassword = ref(false)
-const errorMessage = ref('')
 const rememberedEmailKey = 'linkops.rememberedEmail'
 
 onMounted(() => {
@@ -24,15 +25,15 @@ onMounted(() => {
 })
 
 async function submit() {
-  errorMessage.value = ''
   try {
-    await auth.login({ email: email.value, password: password.value })
+    await auth.login({ email: email.value, password: password.value }, rememberMe.value)
     if (rememberMe.value) window.localStorage.setItem(rememberedEmailKey, email.value)
     else window.localStorage.removeItem(rememberedEmailKey)
     const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/dashboard'
+    notifications.success('Você entrou na sua conta com sucesso.', 'Bem-vindo!')
     await router.replace(redirect)
   } catch (error) {
-    errorMessage.value = getErrorMessage(error)
+    notifications.error(getLoginErrorMessage(error), 'Não conseguimos entrar')
   }
 }
 
@@ -83,7 +84,7 @@ async function submit() {
 
         <form @submit.prevent="submit">
           <div class="mb-3">
-            <label for="login-email" class="!mb-1.5 !block text-xs !font-semibold">E-mail ou telefone</label>
+            <label for="login-email" class="!mb-1.5 !block text-xs !font-semibold">E-mail</label>
             <div class="relative flex items-center">
               <svg class="pointer-events-none absolute left-[13px] size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7" />
@@ -92,10 +93,11 @@ async function submit() {
               <input
                 id="login-email"
                 v-model.trim="email"
-                type="text"
+                type="email"
                 inputmode="email"
                 autocomplete="username"
-                placeholder="Digite seu e-mail ou número de telefone"
+                maxlength="255"
+                placeholder="Digite seu e-mail"
                 required
                 class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy outline-none placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0"
               />
@@ -114,6 +116,7 @@ async function submit() {
                 v-model="password"
                 :type="showPassword ? 'text' : 'password'"
                 autocomplete="current-password"
+                maxlength="72"
                 placeholder="Digite sua senha"
                 required
                 class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-10 !pl-[38px] text-[13px] leading-5 text-deep-navy outline-none placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0"
@@ -143,10 +146,6 @@ async function submit() {
             </label>
             <RouterLink to="/forgot-password" class="text-[11px] font-medium text-linkops-green">Esqueceu sua senha?</RouterLink>
           </div>
-
-          <p v-if="errorMessage" class="mt-[-8px] mb-3 rounded-md bg-soft-background px-3 py-2 text-caption font-medium text-linkops-amber" role="alert">
-            {{ errorMessage }}
-          </p>
 
           <button
             class="!h-[38px] !min-h-[38px] !w-full !rounded-md !bg-linkops-green text-body-base !font-semibold !text-white hover:!bg-deep-navy"

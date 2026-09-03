@@ -5,6 +5,7 @@ import com.linkops.user.domain.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,7 +26,11 @@ public record RegisterRequest(
         @Size(max = 255, message = "O e-mail deve ter no máximo 255 caracteres.")
         String email,
 
-        @Size(max = 50, message = "O telefone deve ter no máximo 50 caracteres.")
+        @Size(max = 9, message = "O telefone deve ter 9 dígitos.")
+        @Pattern(
+                regexp = "^$|^(?:82|83|84|85|86|87)\\d{7}$",
+                message = "Informe um número móvel moçambicano válido (mCel/Tmcel, Vodacom ou Movitel)."
+        )
         String phone,
 
         @NotBlank

@@ -12,7 +12,11 @@ public record UpdateUserRequest(
         @Pattern(regexp = ".*\\S.*", message = "O apelido não pode estar vazio.")
         String lastName,
 
-        @Size(max = 50, message = "O telefone deve ter no máximo 50 caracteres.")
+        @Size(max = 9, message = "O telefone deve ter 9 dígitos.")
+        @Pattern(
+                regexp = "^$|^(?:82|83|84|85|86|87)\\d{7}$",
+                message = "Informe um número móvel moçambicano válido (mCel/Tmcel, Vodacom ou Movitel)."
+        )
         String phone
 ) {
 }

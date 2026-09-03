@@ -8,6 +8,7 @@ import com.linkops.auth.dto.RefreshTokenRequest;
 import com.linkops.auth.dto.RegisterRequest;
 import com.linkops.auth.dto.ResetPasswordRequest;
 import com.linkops.auth.service.AuthService;
+import com.linkops.security.AuthenticatedUser;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,6 +68,19 @@ public class AuthController {
             @Valid @RequestBody RefreshTokenRequest request
     ) {
         return ResponseEntity.ok(authService.refresh(request));
+    }
+
+    @PostMapping("/logout")
+    @Operation(summary = "Terminar a sessão e invalidar os tokens do utilizador")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Sessão terminada"),
+            @ApiResponse(responseCode = "401", description = "Sessão inválida")
+    })
+    public ResponseEntity<Void> logout(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser
+    ) {
+        authService.logout(authenticatedUser.id());
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/forgot-password")

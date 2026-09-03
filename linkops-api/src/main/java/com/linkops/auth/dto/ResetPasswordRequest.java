@@ -5,12 +5,14 @@ import com.linkops.common.validation.BcryptCompatible;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Schema(description = "Token e nova palavra-passe")
 public record ResetPasswordRequest(
         @NotBlank
-        @Size(max = 200, message = "O token é inválido.")
+        @Size(min = 43, max = 43, message = "O token é inválido.")
+        @Pattern(regexp = "^[A-Za-z0-9_-]{43}$", message = "O token é inválido.")
         String token,
 
         @NotBlank

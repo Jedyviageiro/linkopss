@@ -1,9 +1,16 @@
+<script setup lang="ts">
+import ActionModal from '@/shared/components/ActionModal.vue'
+import ToastContainer from '@/shared/components/ToastContainer.vue'
+</script>
+
 <template>
   <RouterView v-slot="{ Component }">
     <Transition name="route-fade" mode="out-in">
       <component :is="Component" />
     </Transition>
   </RouterView>
+  <ToastContainer />
+  <ActionModal />
 </template>
 
 <style>

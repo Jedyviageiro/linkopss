@@ -44,6 +44,7 @@ async function parseBody(response: Response): Promise<unknown> {
 async function refreshTokens(): Promise<boolean> {
   const refreshToken = tokenStorage.getRefreshToken()
   if (!refreshToken) return false
+  const persistent = tokenStorage.isPersistent()
 
   if (!refreshRequest) {
     refreshRequest = fetch(`${env.apiBaseUrl}/auth/refresh`, {
@@ -54,7 +55,7 @@ async function refreshTokens(): Promise<boolean> {
       .then(async (response) => {
         if (!response.ok) return false
         const session = (await response.json()) as RefreshResponse
-        tokenStorage.set(session.accessToken, session.refreshToken)
+        tokenStorage.set(session.accessToken, session.refreshToken, persistent)
         return true
       })
       .catch(() => false)
@@ -90,7 +91,7 @@ export async function apiRequest<T>(
       body: serializedBody,
     })
   } catch {
-    throw new ApiError(0, 'Não foi possível ligar ao servidor.')
+    throw new ApiError(0, 'Não conseguimos concluir o pedido. Verifique sua ligação e tente novamente.')
   }
 
   if (response.status === 401 && auth && retryOnUnauthorized && (await refreshTokens())) {

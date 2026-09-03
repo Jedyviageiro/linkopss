@@ -36,6 +36,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Locale;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -130,8 +131,15 @@ public class AuthService {
     }
 
     @Transactional
+    public void logout(UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new BadCredentialsException("Sessão inválida."));
+        user.invalidateTokens();
+    }
+
+    @Transactional
     public MessageResponse forgotPassword(ForgotPasswordRequest request) {
-        userRepository.findByEmailIgnoreCase(normalizeEmail(request.email())).ifPresent(user -> {
+        userRepository.findByEmailIgnoreCaseForUpdate(normalizeEmail(request.email())).ifPresent(user -> {
             passwordResetTokenRepository.deleteByUserIdAndUsedAtIsNull(user.getId());
 
             String rawToken = generateResetToken();
@@ -158,6 +166,10 @@ public class AuthService {
         if (token.isExpired(now)) {
             token.markAsUsed(now);
             throw new BadRequestException("O token de recuperação é inválido ou expirou.");
+        }
+
+        if (passwordEncoder.matches(request.password(), token.getUser().getPasswordHash())) {
+            throw new BadRequestException("A nova palavra-passe deve ser diferente da atual.");
         }
 
         token.getUser().changePasswordHash(passwordEncoder.encode(request.password()));

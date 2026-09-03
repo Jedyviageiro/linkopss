@@ -51,6 +51,7 @@ services:
     working_dir: /app
     environment:
       VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://localhost:8081/api/v1}
+      VITE_HMR_CLIENT_HOST: 127.0.0.1
       VITE_HMR_CLIENT_PORT: ${FRONTEND_PORT:-5174}
     command: ["sh", "-c", "[ -x node_modules/.bin/vite ] || npm ci; npm run dev -- --host 0.0.0.0"]
     ports:

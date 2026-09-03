@@ -12,6 +12,7 @@ export const authApi = {
     apiRequest<AuthResponse>('/auth/register', { method: 'POST', body: payload, auth: false }),
   login: (payload: LoginRequest) =>
     apiRequest<AuthResponse>('/auth/login', { method: 'POST', body: payload, auth: false }),
+  logout: () => apiRequest<void>('/auth/logout', { method: 'POST' }),
   forgotPassword: (email: string) =>
     apiRequest<MessageResponse>('/auth/forgot-password', {
       method: 'POST',
