@@ -10,6 +10,7 @@ import com.linkops.provider.domain.ProviderStatus;
 import com.linkops.provider.dto.CreateProviderProfileRequest;
 import com.linkops.provider.dto.ProviderResponse;
 import com.linkops.provider.dto.UpdateProviderProfileRequest;
+import com.linkops.provider.dto.UpdatePaymentMethodsRequest;
 import com.linkops.provider.repository.ProviderProfileRepository;
 import com.linkops.notification.service.NotificationService;
 import com.linkops.user.domain.User;
@@ -149,6 +150,16 @@ public class ProviderService {
     public ProviderResponse requestVerification(UUID userId) {
         ProviderProfile profile = findByUserId(userId);
         profile.requestVerification(Instant.now());
+        return ProviderResponse.from(profile);
+    }
+
+    @Transactional
+    public ProviderResponse updatePaymentMethods(
+            UUID userId,
+            UpdatePaymentMethodsRequest request
+    ) {
+        ProviderProfile profile = findByUserId(userId);
+        profile.updatePaymentMethods(request.acceptsCash(), request.acceptsMpesa());
         return ProviderResponse.from(profile);
     }
 

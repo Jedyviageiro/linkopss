@@ -8,6 +8,9 @@ import com.linkops.auth.dto.RefreshTokenRequest;
 import com.linkops.auth.dto.RegisterRequest;
 import com.linkops.auth.dto.ResetPasswordRequest;
 import com.linkops.auth.domain.PasswordResetToken;
+import com.linkops.auth.domain.EmailVerificationToken;
+import com.linkops.auth.dto.VerifyEmailRequest;
+import com.linkops.auth.repository.EmailVerificationTokenRepository;
 import com.linkops.auth.repository.PasswordResetTokenRepository;
 import com.linkops.common.exception.BadRequestException;
 import com.linkops.common.exception.ConflictException;
@@ -21,6 +24,7 @@ import com.linkops.user.repository.UserRepository;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +52,11 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordResetEmailService passwordResetEmailService;
+    private final EmailVerificationTokenRepository emailVerificationTokenRepository;
+    private final EmailVerificationEmailService emailVerificationEmailService;
     private final Duration passwordResetExpiration;
+    private final Duration emailVerificationExpiration;
+    private final boolean emailVerificationRequired;
     private final SecureRandom secureRandom = new SecureRandom();
 
     public AuthService(
@@ -59,7 +67,11 @@ public class AuthService {
             JwtService jwtService,
             PasswordResetTokenRepository passwordResetTokenRepository,
             PasswordResetEmailService passwordResetEmailService,
-            @Value("${linkops.security.password-reset.expiration}") Duration passwordResetExpiration
+            EmailVerificationTokenRepository emailVerificationTokenRepository,
+            EmailVerificationEmailService emailVerificationEmailService,
+            @Value("${linkops.security.password-reset.expiration}") Duration passwordResetExpiration,
+            @Value("${linkops.security.email-verification.expiration}") Duration emailVerificationExpiration,
+            @Value("${linkops.security.email-verification.required:true}") boolean emailVerificationRequired
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -68,10 +80,17 @@ public class AuthService {
         this.jwtService = jwtService;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.passwordResetEmailService = passwordResetEmailService;
+        this.emailVerificationTokenRepository = emailVerificationTokenRepository;
+        this.emailVerificationEmailService = emailVerificationEmailService;
         if (passwordResetExpiration.isNegative() || passwordResetExpiration.isZero()) {
             throw new IllegalArgumentException("A expiração do token de recuperação deve ser positiva.");
         }
         this.passwordResetExpiration = passwordResetExpiration;
+        if (emailVerificationExpiration.isNegative() || emailVerificationExpiration.isZero()) {
+            throw new IllegalArgumentException("A expiração da confirmação de e-mail deve ser positiva.");
+        }
+        this.emailVerificationExpiration = emailVerificationExpiration;
+        this.emailVerificationRequired = emailVerificationRequired;
     }
 
     @Transactional
@@ -96,6 +115,11 @@ public class AuthService {
 
         try {
             User savedUser = userRepository.saveAndFlush(user);
+            if (emailVerificationRequired) {
+                sendEmailVerification(savedUser);
+            } else {
+                savedUser.verifyEmail(Instant.now());
+            }
             return createAuthResponse(AuthenticatedUser.from(savedUser), savedUser);
         } catch (DataIntegrityViolationException exception) {
             throw new ConflictException("Já existe uma conta associada a este e-mail.");
@@ -103,6 +127,11 @@ public class AuthService {
     }
 
     public AuthResponse login(LoginRequest request) {
+        userRepository.findByEmailIgnoreCase(normalizeEmail(request.email()))
+                .filter(user -> !user.isEmailVerified())
+                .ifPresent(user -> {
+                    throw new AccessDeniedException("O e-mail desta conta ainda não foi confirmado.");
+                });
         Authentication authentication = authenticationManager.authenticate(
                 UsernamePasswordAuthenticationToken.unauthenticated(
                         normalizeEmail(request.email()),
@@ -120,6 +149,10 @@ public class AuthService {
         String email = jwtService.extractEmailFromRefreshToken(request.refreshToken());
         AuthenticatedUser authenticatedUser =
                 (AuthenticatedUser) userDetailsService.loadUserByUsername(email);
+
+        if (!authenticatedUser.isEnabled()) {
+            throw new BadCredentialsException("Token inválido ou expirado.");
+        }
 
         if (!jwtService.isRefreshTokenValid(request.refreshToken(), authenticatedUser)) {
             throw new BadCredentialsException("Token inválido ou expirado.");
@@ -157,6 +190,33 @@ public class AuthService {
     }
 
     @Transactional
+    public MessageResponse resendEmailVerification(ForgotPasswordRequest request) {
+        userRepository.findByEmailIgnoreCaseForUpdate(normalizeEmail(request.email()))
+                .filter(user -> !user.isEmailVerified())
+                .ifPresent(this::sendEmailVerification);
+        return new MessageResponse(
+                "Se a conta estiver pendente, enviaremos uma nova confirmação por e-mail."
+        );
+    }
+
+    @Transactional
+    public AuthResponse verifyEmail(VerifyEmailRequest request) {
+        EmailVerificationToken token = emailVerificationTokenRepository
+                .findByTokenHashAndUsedAtIsNull(hashToken(request.token()))
+                .orElseThrow(() -> new BadRequestException(
+                        "A confirmação de e-mail é inválida ou expirou."
+                ));
+        Instant now = Instant.now();
+        if (token.isExpired(now)) {
+            throw new BadRequestException("A confirmação de e-mail é inválida ou expirou.");
+        }
+        User user = token.getUser();
+        user.verifyEmail(now);
+        token.markAsUsed(now);
+        return createAuthResponse(AuthenticatedUser.from(user), user);
+    }
+
+    @Transactional
     public MessageResponse resetPassword(ResetPasswordRequest request) {
         PasswordResetToken token = passwordResetTokenRepository
                 .findByTokenHashAndUsedAtIsNull(hashToken(request.token()))
@@ -190,6 +250,17 @@ public class AuthService {
 
     private String normalizeEmail(String email) {
         return email.trim().toLowerCase(Locale.ROOT);
+    }
+
+    private void sendEmailVerification(User user) {
+        emailVerificationTokenRepository.deleteByUserIdAndUsedAtIsNull(user.getId());
+        String rawToken = generateResetToken();
+        emailVerificationTokenRepository.saveAndFlush(new EmailVerificationToken(
+                user,
+                hashToken(rawToken),
+                Instant.now().plus(emailVerificationExpiration)
+        ));
+        emailVerificationEmailService.send(user.getEmail(), rawToken);
     }
 
     private String generateResetToken() {

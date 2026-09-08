@@ -25,7 +25,8 @@ class JwtServiceTests {
             "$2a$10$hash",
             0,
             UserRole.PROVIDER,
-            UserStatus.ACTIVE
+            UserStatus.ACTIVE,
+            true
     );
 
     @Test

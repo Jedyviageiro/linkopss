@@ -44,6 +44,12 @@ public class ProviderProfile extends BaseEntity {
     @Column(precision = 9, scale = 6)
     private BigDecimal longitude;
 
+    @Column(name = "accepts_cash", nullable = false)
+    private boolean acceptsCash;
+
+    @Column(name = "accepts_mpesa", nullable = false)
+    private boolean acceptsMpesa;
+
     @Column(nullable = false)
     private boolean verified;
 
@@ -88,6 +94,8 @@ public class ProviderProfile extends BaseEntity {
         this.city = normalizeRequired(city);
         this.latitude = latitude;
         this.longitude = longitude;
+        this.acceptsCash = true;
+        this.acceptsMpesa = true;
         this.verified = false;
         this.verificationStatus = ProviderVerificationStatus.NOT_REQUESTED;
         this.averageRating = BigDecimal.ZERO;
@@ -126,6 +134,16 @@ public class ProviderProfile extends BaseEntity {
 
     public void updateAverageRating(BigDecimal averageRating) {
         this.averageRating = averageRating;
+    }
+
+    public void updatePaymentMethods(boolean acceptsCash, boolean acceptsMpesa) {
+        if (!acceptsCash && !acceptsMpesa) {
+            throw new com.linkops.common.exception.BadRequestException(
+                    "Selecione pelo menos uma forma de pagamento."
+            );
+        }
+        this.acceptsCash = acceptsCash;
+        this.acceptsMpesa = acceptsMpesa;
     }
 
     public void recordCompletedJob() {

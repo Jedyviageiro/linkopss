@@ -12,6 +12,12 @@ export const authApi = {
     apiRequest<AuthResponse>('/auth/register', { method: 'POST', body: payload, auth: false }),
   login: (payload: LoginRequest) =>
     apiRequest<AuthResponse>('/auth/login', { method: 'POST', body: payload, auth: false }),
+  verifyEmail: (token: string) =>
+    apiRequest<AuthResponse>('/auth/verify-email', { method: 'POST', body: { token }, auth: false }),
+  resendEmailVerification: (email: string) =>
+    apiRequest<MessageResponse>('/auth/resend-email-verification', {
+      method: 'POST', body: { email }, auth: false,
+    }),
   logout: () => apiRequest<void>('/auth/logout', { method: 'POST' }),
   forgotPassword: (email: string) =>
     apiRequest<MessageResponse>('/auth/forgot-password', {

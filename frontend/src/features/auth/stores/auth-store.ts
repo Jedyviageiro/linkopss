@@ -44,6 +44,18 @@ export const useAuthStore = defineStore('auth', () => {
     loading.value = true
     try {
       const session = await authApi.register(payload)
+      tokenStorage.clear()
+      user.value = null
+      return session.user
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function verifyEmail(token: string) {
+    loading.value = true
+    try {
+      const session = await authApi.verifyEmail(token)
       tokenStorage.set(session.accessToken, session.refreshToken)
       user.value = session.user
       return session.user
@@ -61,5 +73,5 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  return { user, role, initialized, loading, isAuthenticated, initialize, login, register, logout }
+  return { user, role, initialized, loading, isAuthenticated, initialize, login, register, verifyEmail, logout }
 })

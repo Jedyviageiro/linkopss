@@ -44,6 +44,8 @@ public class SecurityConfig {
                                 "/auth/register",
                                 "/auth/login",
                                 "/auth/refresh",
+                                "/auth/verify-email",
+                                "/auth/resend-email-verification",
                                 "/auth/forgot-password",
                                 "/auth/reset-password"
                         ).permitAll()

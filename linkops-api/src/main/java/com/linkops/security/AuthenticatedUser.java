@@ -19,7 +19,8 @@ public record AuthenticatedUser(
         String passwordHash,
         int tokenVersion,
         UserRole role,
-        UserStatus status
+        UserStatus status,
+        boolean emailVerified
 ) implements UserDetails {
 
     public static AuthenticatedUser from(User user) {
@@ -29,7 +30,8 @@ public record AuthenticatedUser(
                 user.getPasswordHash(),
                 user.getTokenVersion(),
                 user.getRole(),
-                user.getStatus()
+                user.getStatus(),
+                user.isEmailVerified()
         );
     }
 
@@ -56,6 +58,6 @@ public record AuthenticatedUser(
 
     @Override
     public boolean isEnabled() {
-        return status == UserStatus.ACTIVE;
+        return status == UserStatus.ACTIVE && emailVerified;
     }
 }

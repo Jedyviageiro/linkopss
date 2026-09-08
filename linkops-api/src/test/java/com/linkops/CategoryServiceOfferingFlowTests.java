@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -54,10 +56,12 @@ class CategoryServiceOfferingFlowTests {
                         .content("{\"name\":\"Categoria protegida\"}"))
                 .andExpect(status().isUnauthorized());
 
-        User admin = userRepository.saveAndFlush(new User(
+        User admin = new User(
                 "Admin", "LinkOps", "category.admin@linkops.local", null,
                 passwordEncoder.encode("Senha-segura-123"), UserRole.ADMIN
-        ));
+        );
+        admin.verifyEmail(Instant.now());
+        userRepository.saveAndFlush(admin);
         String adminToken = jwtService.generateAccessToken(AuthenticatedUser.from(admin));
 
         MvcResult createResult = mockMvc.perform(post("/admin/categories")

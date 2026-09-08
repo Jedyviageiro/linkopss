@@ -85,6 +85,11 @@ linkops:
       connect-timeout: ${CLOUDINARY_CONNECT_TIMEOUT:5s}
       read-timeout: ${CLOUDINARY_READ_TIMEOUT:30s}
   security:
+    email-verification:
+      required: ${EMAIL_VERIFICATION_REQUIRED:true}
+      expiration: ${EMAIL_VERIFICATION_EXPIRATION:30m}
+      frontend-url: ${EMAIL_VERIFICATION_FRONTEND_URL:http://localhost:5174/verify-email}
+      email-from: ${MAIL_FROM:${MAIL_USERNAME:no-reply@linkops.co.mz}}
     password-reset:
       expiration: ${PASSWORD_RESET_EXPIRATION:5m}
       frontend-url: ${PASSWORD_RESET_FRONTEND_URL:http://localhost:5174/reset-password}

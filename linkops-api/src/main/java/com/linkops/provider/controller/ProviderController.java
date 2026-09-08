@@ -3,6 +3,7 @@ package com.linkops.provider.controller;
 import com.linkops.provider.dto.CreateProviderProfileRequest;
 import com.linkops.provider.dto.ProviderResponse;
 import com.linkops.provider.dto.UpdateProviderProfileRequest;
+import com.linkops.provider.dto.UpdatePaymentMethodsRequest;
 import com.linkops.provider.service.ProviderService;
 import com.linkops.security.AuthenticatedUser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -74,6 +75,19 @@ public class ProviderController {
     ) {
         return ResponseEntity.ok(
                 providerService.updateOwnProfile(authenticatedUser.id(), request)
+        );
+    }
+
+    @PatchMapping("/me/payment-methods")
+    @Operation(summary = "Atualizar formas de pagamento aceites")
+    @SecurityRequirement(name = "bearerAuth")
+    @PreAuthorize("hasRole('PROVIDER')")
+    public ResponseEntity<ProviderResponse> updatePaymentMethods(
+            @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+            @Valid @RequestBody UpdatePaymentMethodsRequest request
+    ) {
+        return ResponseEntity.ok(
+                providerService.updatePaymentMethods(authenticatedUser.id(), request)
         );
     }
 

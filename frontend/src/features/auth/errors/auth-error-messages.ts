@@ -6,8 +6,17 @@ export function getLoginErrorMessage(error: unknown): string {
       return 'Confira o e-mail e a senha e tente novamente.'
     }
     if (error.status === 403) {
-      return 'Esta conta não está disponível. Entre em contacto com o suporte se precisar de ajuda.'
+      return 'Confirme seu e-mail antes de entrar. Se já confirmou, entre em contacto com o suporte.'
     }
+  }
+  return getErrorMessage(error)
+}
+
+export function getEmailVerificationErrorMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    if (error.status === 400) return 'Este link já foi usado ou perdeu a validade. Peça uma nova confirmação.'
+    if (error.status === 429) return 'Aguarde um momento antes de pedir uma nova confirmação.'
+    if (error.status === 503) return 'Não conseguimos enviar o e-mail agora. Tente novamente em alguns instantes.'
   }
   return getErrorMessage(error)
 }

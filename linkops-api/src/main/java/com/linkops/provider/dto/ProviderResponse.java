@@ -22,6 +22,8 @@ public record ProviderResponse(
         BigDecimal latitude,
         BigDecimal longitude,
         LocationResponse location,
+        boolean acceptsCash,
+        boolean acceptsMpesa,
         boolean verified,
         ProviderVerificationStatus verificationStatus,
         Instant verificationRequestedAt,
@@ -48,6 +50,8 @@ public record ProviderResponse(
                 LocationResponse.of(
                         profile.getCity(), profile.getLatitude(), profile.getLongitude()
                 ),
+                profile.isAcceptsCash(),
+                profile.isAcceptsMpesa(),
                 profile.isVerified(),
                 profile.getVerificationStatus(),
                 profile.getVerificationRequestedAt(),

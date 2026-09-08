@@ -7,6 +7,7 @@ import com.linkops.auth.dto.MessageResponse;
 import com.linkops.auth.dto.RefreshTokenRequest;
 import com.linkops.auth.dto.RegisterRequest;
 import com.linkops.auth.dto.ResetPasswordRequest;
+import com.linkops.auth.dto.VerifyEmailRequest;
 import com.linkops.auth.service.AuthService;
 import com.linkops.security.AuthenticatedUser;
 import jakarta.validation.Valid;
@@ -44,6 +45,23 @@ public class AuthController {
             @Valid @RequestBody RegisterRequest request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
+    }
+
+    @PostMapping("/verify-email")
+    @Operation(summary = "Confirmar o endereço de e-mail e iniciar a sessão")
+    public ResponseEntity<AuthResponse> verifyEmail(
+            @Valid @RequestBody VerifyEmailRequest request
+    ) {
+        return ResponseEntity.ok(authService.verifyEmail(request));
+    }
+
+    @PostMapping("/resend-email-verification")
+    @Operation(summary = "Reenviar a confirmação do endereço de e-mail")
+    public ResponseEntity<MessageResponse> resendEmailVerification(
+            @Valid @RequestBody ForgotPasswordRequest request
+    ) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(authService.resendEmailVerification(request));
     }
 
     @PostMapping("/login")

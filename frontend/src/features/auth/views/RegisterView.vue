@@ -70,9 +70,9 @@ async function submit() {
   form.lastName = names.join(' ')
 
   try {
-    const user = await auth.register(form)
-    notifications.success('Sua conta foi criada com sucesso.', 'Conta criada!')
-    await router.replace(user.role === 'PROVIDER' ? '/provider/profile' : '/onboarding/client')
+    await auth.register(form)
+    notifications.info('Enviamos uma confirmação para o endereço informado.', 'Confira seu e-mail')
+    await router.replace({ name: 'verify-email-sent', query: { email: form.email } })
   } catch (error) {
     notifications.error(getRegistrationErrorMessage(error), 'Não conseguimos criar sua conta')
   }

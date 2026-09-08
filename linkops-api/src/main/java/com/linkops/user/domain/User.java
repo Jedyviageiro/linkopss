@@ -11,6 +11,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 @Getter
 @Entity
 @Table(name = "users")
@@ -35,6 +37,9 @@ public class User extends BaseEntity {
 
     @Column(name = "token_version", nullable = false)
     private int tokenVersion;
+
+    @Column(name = "email_verified_at")
+    private Instant emailVerifiedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
@@ -92,6 +97,16 @@ public class User extends BaseEntity {
 
     public void invalidateTokens() {
         this.tokenVersion++;
+    }
+
+    public boolean isEmailVerified() {
+        return emailVerifiedAt != null;
+    }
+
+    public void verifyEmail(Instant verifiedAt) {
+        if (emailVerifiedAt == null) {
+            this.emailVerifiedAt = verifiedAt;
+        }
     }
 
     private static String normalizeRequired(String value) {

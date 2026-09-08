@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -47,14 +49,16 @@ class AdministrationOpenApiTests {
 
     @Test
     void shouldAllowOnlyAdminToControlPlatformResources() throws Exception {
-        User admin = userRepository.saveAndFlush(new User(
+        User admin = new User(
                 "Admin",
                 "LinkOps",
                 "platform.admin@linkops.local",
                 null,
                 passwordEncoder.encode("Senha-segura-123"),
                 UserRole.ADMIN
-        ));
+        );
+        admin.verifyEmail(Instant.now());
+        userRepository.saveAndFlush(admin);
         String adminToken = login("platform.admin@linkops.local");
 
         Registration provider = register(
