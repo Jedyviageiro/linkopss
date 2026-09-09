@@ -45,6 +45,7 @@ async function refreshTokens(): Promise<boolean> {
   const refreshToken = tokenStorage.getRefreshToken()
   if (!refreshToken) return false
   const persistent = tokenStorage.isPersistent()
+  const storageRevision = tokenStorage.revision()
 
   if (!refreshRequest) {
     refreshRequest = fetch(`${env.apiBaseUrl}/auth/refresh`, {
@@ -55,8 +56,12 @@ async function refreshTokens(): Promise<boolean> {
       .then(async (response) => {
         if (!response.ok) return false
         const session = (await response.json()) as RefreshResponse
-        tokenStorage.set(session.accessToken, session.refreshToken, persistent)
-        return true
+        return tokenStorage.setIfUnchanged(
+          session.accessToken,
+          session.refreshToken,
+          persistent,
+          storageRevision,
+        )
       })
       .catch(() => false)
       .finally(() => {

@@ -41,7 +41,7 @@ async function submit() {
 
 <template>
   <main class="flex min-h-screen items-center justify-center bg-soft-background p-3 font-sans text-deep-navy">
-    <div class="grid h-[min(600px,calc(100vh-24px))] min-h-[560px] w-full max-w-[1000px] grid-cols-[43%_57%] overflow-hidden rounded-[10px] border border-linkops-slate-200 bg-white shadow-[0_4px_22px_rgba(15,23,42,0.06)] max-[900px]:h-auto max-[900px]:min-h-0 max-[900px]:grid-cols-1">
+    <div class="grid min-h-[660px] w-full max-w-[1000px] grid-cols-[43%_57%] overflow-hidden rounded-[10px] border border-linkops-slate-200 bg-white shadow-[0_4px_22px_rgba(15,23,42,0.06)] max-[900px]:min-h-0 max-[900px]:grid-cols-1">
     <section
       class="relative h-full overflow-hidden bg-deep-navy max-[900px]:h-[280px]"
       aria-label="LinkOps para prestadores de serviços"
@@ -67,7 +67,7 @@ async function submit() {
       </div>
     </section>
 
-    <section class="flex min-w-0 items-start justify-center px-7 py-6 max-[900px]:px-6 max-[900px]:py-6 max-[480px]:px-5">
+    <section class="flex min-w-0 items-center justify-center px-7 py-6 max-[900px]:px-6 max-[900px]:py-8 max-[480px]:px-5">
       <div class="w-full max-w-[430px]">
         <RouterLink
           to="/"

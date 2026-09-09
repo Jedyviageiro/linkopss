@@ -8,6 +8,7 @@ const dialog = ref<HTMLElement | null>(null)
 const styles: Record<ModalKind, { icon: string; button: string }> = {
   success: { icon: 'bg-green-50 text-linkops-green', button: '!bg-linkops-green hover:!bg-deep-navy' },
   error: { icon: 'bg-red-50 text-red-500', button: '!bg-red-500 hover:!bg-red-600' },
+  danger: { icon: 'bg-red-50 text-red-500', button: '!bg-red-500 hover:!bg-red-600' },
   warning: { icon: 'bg-amber-50 text-amber-500', button: '!bg-amber-500 hover:!bg-amber-600' },
   info: { icon: 'bg-sky-50 text-sky-500', button: '!bg-sky-500 hover:!bg-sky-600' },
 }
@@ -37,7 +38,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', handleKeydown))
 
           <div class="mx-auto mb-4 flex size-12 items-center justify-center rounded-full" :class="styles[modals.current.kind].icon" aria-hidden="true">
             <svg v-if="modals.current.kind === 'success'" class="size-7" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="2" /><path d="m11 16.5 3.2 3.2 6.8-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-            <svg v-else-if="modals.current.kind === 'error'" class="size-7" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="2" /><path d="m12.5 12.5 7 7m0-7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+            <svg v-else-if="modals.current.kind === 'error' || modals.current.kind === 'danger'" class="size-7" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="2" /><path d="m12.5 12.5 7 7m0-7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
             <svg v-else-if="modals.current.kind === 'warning'" class="size-7" viewBox="0 0 32 32" fill="none"><path d="M16 6 27 25H5L16 6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" /><path d="M16 12v6m0 3v.1" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
             <svg v-else class="size-7" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="2" /><path d="M16 14v7m0-11v.1" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
           </div>

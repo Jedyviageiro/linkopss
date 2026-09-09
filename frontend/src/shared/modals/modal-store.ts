@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 
-export type ModalKind = 'success' | 'error' | 'warning' | 'info'
+export type ModalKind = 'success' | 'error' | 'warning' | 'info' | 'danger'
 
 export interface ActionModalOptions {
   kind?: ModalKind

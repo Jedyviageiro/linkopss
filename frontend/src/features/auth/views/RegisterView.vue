@@ -81,7 +81,7 @@ async function submit() {
 
 <template>
   <main class="flex min-h-screen overflow-x-hidden items-center justify-center bg-soft-background p-3 font-sans text-deep-navy">
-    <div class="grid h-[min(600px,calc(100vh-24px))] min-h-[560px] w-full max-w-[1000px] grid-cols-[43%_57%] overflow-hidden rounded-[10px] border border-linkops-slate-200 bg-white shadow-[0_4px_22px_rgba(15,23,42,0.06)] max-[900px]:h-auto max-[900px]:min-h-0 max-[900px]:grid-cols-1">
+    <div class="grid min-h-[660px] w-full max-w-[1000px] grid-cols-[43%_57%] overflow-hidden rounded-[10px] border border-linkops-slate-200 bg-white shadow-[0_4px_22px_rgba(15,23,42,0.06)] max-[900px]:min-h-0 max-[900px]:grid-cols-1">
       <section class="relative h-full overflow-hidden bg-deep-navy max-[900px]:h-[280px]" aria-label="LinkOps para novos prestadores">
         <img
           :src="registerHero"
@@ -95,8 +95,8 @@ async function submit() {
         </div>
       </section>
 
-      <section class="flex min-w-0 items-start justify-center overflow-x-hidden px-7 py-6 max-[900px]:overflow-y-visible max-[900px]:px-6 max-[900px]:py-6 max-[480px]:px-5">
-        <div class="w-full max-w-[430px]">
+      <section class="flex min-w-0 items-center justify-center overflow-x-hidden px-7 py-6 max-[900px]:px-6 max-[900px]:py-8 max-[480px]:px-5">
+        <div class="w-full max-w-[500px]">
           <RouterLink to="/" class="mb-3 inline-block text-h5 font-medium tracking-[-0.02em] text-deep-navy no-underline hover:no-underline" aria-label="LinkOps — página inicial">
             <span class="text-linkops-green">Link</span>Ops
           </RouterLink>
@@ -106,11 +106,11 @@ async function submit() {
             <p class="m-0 text-caption text-linkops-slate-500">Preencha os dados abaixo para começar.</p>
           </header>
 
-          <form class="max-h-[452px] w-full min-w-0 overflow-x-hidden overflow-y-auto pr-2 [scrollbar-width:thin] max-[900px]:max-h-none max-[900px]:overflow-y-visible max-[900px]:pr-0" @submit.prevent="submit">
-            <fieldset class="mb-4 grid min-w-0 grid-cols-2 gap-3 border-0 p-0 max-[560px]:grid-cols-1">
+          <form class="w-full min-w-0" @submit.prevent="submit">
+            <fieldset class="mb-3 grid min-w-0 grid-cols-2 gap-3 border-0 p-0 max-[560px]:grid-cols-1">
               <legend class="sr-only">Tipo de conta</legend>
               <label
-                class="relative !flex min-h-[72px] cursor-pointer items-center justify-center rounded-lg border !p-3 text-center transition-colors has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-linkops-green"
+                class="relative !flex min-h-[64px] cursor-pointer items-center justify-center rounded-lg border !p-3 text-center transition-colors has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-linkops-green"
                 :class="form.role === 'CLIENT' ? 'border-linkops-green bg-green-50/70 ring-1 ring-linkops-green/20' : 'border-linkops-slate-200 bg-white hover:border-linkops-slate-300'"
               >
                 <input v-model="form.role" class="pointer-events-none absolute !h-px !w-px overflow-hidden !border-0 !p-0 opacity-0 [clip:rect(0,0,0,0)]" type="radio" value="CLIENT" />
@@ -121,7 +121,7 @@ async function submit() {
               </label>
 
               <label
-                class="relative !flex min-h-[72px] cursor-pointer items-center justify-center rounded-lg border !p-3 text-center transition-colors has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-linkops-green"
+                class="relative !flex min-h-[64px] cursor-pointer items-center justify-center rounded-lg border !p-3 text-center transition-colors has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-linkops-green"
                 :class="form.role === 'PROVIDER' ? 'border-linkops-green bg-green-50/70 ring-1 ring-linkops-green/20' : 'border-linkops-slate-200 bg-white hover:border-linkops-slate-300'"
               >
                 <input v-model="form.role" class="pointer-events-none absolute !h-px !w-px overflow-hidden !border-0 !p-0 opacity-0 [clip:rect(0,0,0,0)]" type="radio" value="PROVIDER" />
@@ -132,7 +132,8 @@ async function submit() {
               </label>
             </fieldset>
 
-            <div class="mb-3">
+            <div class="mb-3 grid min-w-0 grid-cols-2 gap-3 max-[560px]:grid-cols-1">
+            <div class="min-w-0">
               <label for="register-name" class="!mb-1.5 !block text-xs !font-semibold">Nome completo</label>
               <div class="relative flex items-center">
                 <svg class="pointer-events-none absolute left-3 size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -143,7 +144,7 @@ async function submit() {
               </div>
             </div>
 
-            <div class="mb-3">
+            <div class="min-w-0">
               <label for="register-email" class="!mb-1.5 !block text-xs !font-semibold">E-mail</label>
               <div class="relative flex items-center">
                 <svg class="pointer-events-none absolute left-3 size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -152,6 +153,7 @@ async function submit() {
                 </svg>
                 <input id="register-email" v-model.trim="form.email" class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0" type="email" maxlength="255" placeholder="Digite seu e-mail" autocomplete="email" required />
               </div>
+            </div>
             </div>
 
             <div class="mb-3 grid min-w-0 grid-cols-2 gap-2 max-[560px]:grid-cols-1">
@@ -163,7 +165,7 @@ async function submit() {
                   </svg>
                   <input id="register-phone" :value="form.phone" class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0" type="tel" inputmode="numeric" placeholder="Ex.: 841234567" autocomplete="tel-national" maxlength="9" required aria-describedby="register-phone-help" @input="updatePhone" />
                 </div>
-                <p id="register-phone-help" class="mt-1 mb-0 text-[10px] leading-4 text-linkops-slate-500">9 dígitos · mCel/Tmcel 82/83 · Vodacom 84/85 · Movitel 86/87</p>
+                <p id="register-phone-help" class="mt-1 mb-0 text-[10px] leading-4 text-linkops-slate-500">9 dígitos · Prefixos: 82/83, 84/85 ou 86/87</p>
               </div>
 
               <div class="min-w-0">

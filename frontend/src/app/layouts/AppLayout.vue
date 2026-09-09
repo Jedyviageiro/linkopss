@@ -11,7 +11,7 @@ const notifications = useNotificationStore()
 
 async function logout() {
   const confirmed = await modals.open({
-    kind: 'warning',
+    kind: 'danger',
     title: 'Terminar sessão?',
     message: 'Você precisará entrar novamente para acessar sua conta.',
     confirmLabel: 'Sair',
@@ -19,16 +19,21 @@ async function logout() {
   })
   if (!confirmed) return
 
-  await auth.logout()
-  await router.replace({ name: 'login' })
-  notifications.info('Você saiu da sua conta com segurança.', 'Sessão terminada')
+  try {
+    await auth.logout()
+  } catch {
+    // The local session is cleared by the store even if the server is unavailable.
+  } finally {
+    await router.replace({ name: 'login' })
+    notifications.info('Você saiu da sua conta com segurança.', 'Sessão terminada')
+  }
 }
 </script>
 
 <template>
   <div class="app-shell">
     <header class="app-header">
-      <RouterLink class="brand" to="/">LinkOps</RouterLink>
+      <RouterLink class="brand" :to="auth.isAuthenticated ? '/dashboard' : '/login'">LinkOps</RouterLink>
       <nav aria-label="Navegação principal">
         <RouterLink to="/services">Serviços</RouterLink>
         <RouterLink to="/providers">Prestadores</RouterLink>

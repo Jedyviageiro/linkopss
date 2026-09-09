@@ -1,5 +1,6 @@
 const ACCESS_TOKEN_KEY = 'linkops.accessToken'
 const REFRESH_TOKEN_KEY = 'linkops.refreshToken'
+let storageRevision = 0
 
 function localStorage(): Storage | null {
   return typeof window === 'undefined' ? null : window.localStorage
@@ -17,6 +18,7 @@ export const tokenStorage = {
   getAccessToken: () => getItem(ACCESS_TOKEN_KEY),
   getRefreshToken: () => getItem(REFRESH_TOKEN_KEY),
   isPersistent: () => localStorage()?.getItem(REFRESH_TOKEN_KEY) !== null,
+  revision: () => storageRevision,
 
   set(accessToken: string, refreshToken: string, persistent = true) {
     this.clear()
@@ -25,7 +27,14 @@ export const tokenStorage = {
     target?.setItem(REFRESH_TOKEN_KEY, refreshToken)
   },
 
+  setIfUnchanged(accessToken: string, refreshToken: string, persistent: boolean, expectedRevision: number) {
+    if (storageRevision !== expectedRevision) return false
+    this.set(accessToken, refreshToken, persistent)
+    return true
+  },
+
   clear() {
+    storageRevision += 1
     for (const target of [localStorage(), sessionStorage()]) {
       target?.removeItem(ACCESS_TOKEN_KEY)
       target?.removeItem(REFRESH_TOKEN_KEY)

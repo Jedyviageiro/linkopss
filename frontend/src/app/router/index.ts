@@ -55,7 +55,7 @@ export const router = createRouter({
         },
       ],
     },
-    { path: '/login', name: 'login', component: () => import('@/features/auth/views/LoginView.vue'), meta: { guestOnly: true } },
+    { path: '/login', name: 'login', component: () => import('@/features/auth/views/LoginView.vue') },
     { path: '/register', name: 'register', component: () => import('@/features/auth/views/RegisterView.vue'), meta: { guestOnly: true } },
     { path: '/verify-email-sent', name: 'verify-email-sent', component: () => import('@/features/auth/views/VerifyEmailSentView.vue'), meta: { guestOnly: true } },
     { path: '/verify-email', name: 'verify-email', component: () => import('@/features/auth/views/VerifyEmailView.vue') },
