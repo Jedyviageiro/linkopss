@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { categoriesApi } from '@/features/categories/api/categories-api'
 import type { Category } from '@/features/categories/types/category'
 import { servicesApi } from '@/features/services/api/services-api'
@@ -7,7 +8,9 @@ import type { ServiceOffering, ServiceQuery } from '@/features/services/types/se
 import { getErrorMessage } from '@/shared/api/api-error'
 import type { PageMetadata } from '@/shared/types/api'
 
-const filters = reactive<ServiceQuery>({ q: '', category: '', city: '', page: 0, size: 12 })
+const route = useRoute()
+const queryValue = (name: string) => typeof route.query[name] === 'string' ? String(route.query[name]) : ''
+const filters = reactive<ServiceQuery>({ q: queryValue('q'), category: queryValue('category'), city: queryValue('city'), page: 0, size: 12 })
 const services = ref<ServiceOffering[]>([])
 const categories = ref<Category[]>([])
 const page = ref<PageMetadata>({ size: 12, number: 0, totalElements: 0, totalPages: 0 })

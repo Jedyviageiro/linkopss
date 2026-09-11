@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/features/auth/stores/auth-store'
 import { useModalStore } from '@/shared/modals/modal-store'
 import { useNotificationStore } from '@/shared/notifications/notification-store'
 
 const auth = useAuthStore()
+const route = useRoute()
 const router = useRouter()
 const modals = useModalStore()
 const notifications = useNotificationStore()
@@ -31,7 +32,8 @@ async function logout() {
 </script>
 
 <template>
-  <div class="app-shell">
+  <RouterView v-if="route.meta.fullBleed" />
+  <div v-else class="app-shell">
     <header class="app-header">
       <RouterLink class="brand" :to="auth.isAuthenticated ? '/dashboard' : '/login'">LinkOps</RouterLink>
       <nav aria-label="Navegação principal">

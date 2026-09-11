@@ -1,4 +1,9 @@
-@import "tailwindcss";
+@import "tailwindcss" source("../../");
+
+/* Explicit sources also track newly added views on Docker bind mounts. */
+@source "../../app";
+@source "../../features";
+@source "../../shared";
 
 @theme {
   --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;

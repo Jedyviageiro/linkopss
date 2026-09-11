@@ -8,6 +8,7 @@ declare module 'vue-router' {
     requiresAuth?: boolean
     guestOnly?: boolean
     roles?: UserRole[]
+    fullBleed?: boolean
   }
 }
 
@@ -30,7 +31,7 @@ export const router = createRouter({
           component: () => import('@/app/views/ModuleView.vue'),
           props: { title: 'Prestadores', description: 'Descoberta e perfis públicos de prestadores.' },
         },
-        { path: 'dashboard', name: 'dashboard', component: () => import('@/app/views/DashboardView.vue'), meta: { requiresAuth: true } },
+        { path: 'dashboard', name: 'dashboard', component: () => import('@/app/views/DashboardView.vue'), meta: { requiresAuth: true, fullBleed: true } },
         {
           path: 'profile', name: 'profile', component: () => import('@/app/views/ModuleView.vue'),
           props: { title: 'Minha conta', description: 'Dados pessoais e preferências da conta.' }, meta: { requiresAuth: true },
@@ -48,6 +49,16 @@ export const router = createRouter({
           path: 'notifications', name: 'notifications', component: () => import('@/app/views/ModuleView.vue'),
           props: { title: 'Notificações', description: 'Atualizações dos pedidos e da conta.' }, meta: { requiresAuth: true },
         },
+        ...([
+          ['messages', 'messages', 'Mensagens', 'Conversas com prestadores e clientes.'],
+          ['favorites', 'favorites', 'Favoritos', 'Serviços e prestadores guardados.'],
+          ['payments', 'payments', 'Pagamentos', 'Métodos e histórico de pagamentos.'],
+          ['history', 'history', 'Histórico', 'Histórico dos seus serviços e pedidos anteriores.'],
+          ['settings', 'settings', 'Configurações', 'Preferências da sua conta.'],
+          ['help', 'help', 'Ajuda', 'Respostas e apoio para usar a LinkOps.'],
+        ] as const).map(([path, name, title, description]) => ({
+          path, name, component: () => import('@/app/views/ModuleView.vue'), props: { title, description }, meta: { requiresAuth: true },
+        })),
         {
           path: 'admin', name: 'admin', component: () => import('@/app/views/ModuleView.vue'),
           props: { title: 'Administração', description: 'Moderação de utilizadores, prestadores, serviços e categorias.' },

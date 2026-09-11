@@ -90,20 +90,20 @@ async function completeOnboarding(skipped: boolean) {
     skipped ? 'Você pode completar suas preferências mais tarde.' : 'Suas preferências foram guardadas.',
     skipped ? 'Tudo pronto para começar' : 'Configuração concluída!',
   )
-  await router.replace({ name: 'services' })
+  await router.replace({ name: 'dashboard' })
 }
 </script>
 
 <template>
-  <main class="flex min-h-screen items-center justify-center overflow-x-hidden bg-soft-background p-5 font-sans text-deep-navy max-[600px]:p-3">
+  <main class="flex min-h-screen max-w-full items-center justify-center overflow-x-hidden bg-soft-background p-5 font-sans text-deep-navy max-[600px]:p-3">
     <div class="grid h-[min(720px,calc(100vh-40px))] min-h-[650px] w-full max-w-[1120px] grid-cols-[40%_60%] overflow-hidden rounded-xl border border-linkops-slate-200 bg-white shadow-[0_12px_38px_rgba(15,23,42,0.08)] max-[900px]:my-0 max-[900px]:h-auto max-[900px]:min-h-0 max-[900px]:grid-cols-1">
       <section class="relative h-full min-h-0 overflow-hidden bg-linkops-slate-900 max-[900px]:h-[220px]" aria-label="Clientes LinkOps">
         <img :src="onboardingHero" alt="Cliente a procurar serviços na LinkOps" class="absolute inset-0 size-full object-cover object-center" />
         <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,23,42,0.01),rgba(15,23,42,0.12))]" aria-hidden="true"></div>
       </section>
 
-      <section class="flex min-w-0 justify-center overflow-hidden px-10 py-8 max-[900px]:overflow-visible max-[900px]:px-7 max-[600px]:px-5 max-[600px]:py-6">
-        <div class="flex min-h-0 w-full max-w-[540px] flex-col">
+      <section class="flex min-w-0 max-w-full justify-center overflow-hidden px-10 py-8 max-[900px]:overflow-visible max-[900px]:px-7 max-[600px]:px-5 max-[600px]:py-6">
+        <div class="flex min-h-0 w-full min-w-0 max-w-[540px] flex-col">
           <header class="shrink-0">
             <div class="mb-6 flex items-center justify-between">
               <span class="text-[20px] leading-6 font-semibold tracking-[-0.02em]" aria-label="LinkOps"><span class="text-linkops-green">Link</span>Ops</span>
@@ -118,7 +118,7 @@ async function completeOnboarding(skipped: boolean) {
           </header>
 
           <Transition name="onboarding-step" mode="out-in">
-            <div :key="currentStep" class="min-h-0 flex-1 overflow-y-auto pr-1 [scrollbar-width:thin] max-[900px]:overflow-visible">
+            <div :key="currentStep" class="min-h-0 min-w-0 flex-1 overflow-x-hidden overflow-y-auto pr-1 [scrollbar-width:none] max-[900px]:overflow-visible [&::-webkit-scrollbar]:hidden">
               <div class="mb-6">
                 <h1 class="mb-1.5 text-[24px] leading-8 font-semibold tracking-[-0.025em]">{{ stepDetails.title }}</h1>
                 <p class="m-0 max-w-[440px] text-[13px] leading-5 text-linkops-slate-500">{{ stepDetails.subtitle }}</p>
