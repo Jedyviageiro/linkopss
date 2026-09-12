@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ServiceIcon from './ServiceIcon.vue'
 export type DashboardIconName =
-  | 'arrow-right' | 'bell' | 'camera' | 'card' | 'care' | 'chevron-down'
+  | 'truck' | 'arrow-right' | 'bell' | 'camera' | 'card' | 'care' | 'chevron-down'
   | 'clipboard' | 'crown' | 'heart' | 'help' | 'history' | 'home' | 'logout' | 'message'
   | 'pin' | 'search' | 'settings' | 'shield' | 'sliders' | 'sparkles'
   | 'spray' | 'star' | 'wrench' | 'beauty' | 'send' | 'bolt' | 'snowflake' | 'pipe' | 'appliance' | 'air'
@@ -12,7 +12,8 @@ defineProps<{ name: DashboardIconName }>()
 <template>
   <ServiceIcon v-if="['wrench', 'spray', 'care', 'camera', 'beauty', 'pipe', 'appliance', 'air', 'bolt'].includes(name)" :name="name" />
   <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <template v-if="name === 'home'"><path d="m3 10 9-7 9 7v10H5V10" /><path d="M9 20v-6h6v6" /></template>
+    <template v-if="name === 'truck'"><path d="M3 17H2V4h13v13H8m7-9h4l3 4v5h-2m-5 0h-2M15 12h7" /><circle cx="6" cy="17" r="2" /><circle cx="18" cy="17" r="2" /></template>
+    <template v-else-if="name === 'home'"><path d="m3 10 9-7 9 7v10H5V10" /><path d="M9 20v-6h6v6" /></template>
     <template v-else-if="name === 'search'"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m15.5 15.5 4 4" /></template>
     <template v-else-if="name === 'clipboard'"><rect x="5" y="4" width="14" height="17" rx="2" /><path d="M9 4.5V3h6v1.5M9 10h6m-6 4h6" /></template>
     <template v-else-if="name === 'message'"><path d="M21 11.5a8 8 0 0 1-8.5 8A8.7 8.7 0 0 1 8 18.3L3 20l1.7-5A8.5 8.5 0 1 1 21 11.5Z" /><path d="M8 12h.1m3.9 0h.1m3.9 0h.1" /></template>

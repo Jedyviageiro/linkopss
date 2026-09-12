@@ -23,6 +23,7 @@ export const router = createRouter({
         {
           path: 'services',
           name: 'services',
+          meta: { fullBleed: true },
           component: () => import('@/features/services/views/ServiceListView.vue'),
         },
         {

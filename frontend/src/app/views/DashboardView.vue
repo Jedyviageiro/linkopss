@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import toolboxArt from '@/assets/photos/nav-bar-bottom-left-corner-art.png'
+import MarketplaceSidebar from '@/app/components/MarketplaceSidebar.vue'
 import HomeCardCollection from '@/app/components/HomeCardCollection.vue'
 import MarketplaceAvatar from '@/app/components/MarketplaceAvatar.vue'
 import Icon, { type DashboardIconName } from '@/app/components/DashboardIcon.vue'
@@ -66,12 +66,6 @@ const primary = '!min-h-[36px] !rounded-[8px] !border-0 !bg-[#0FA24A] !px-[18px]
 const outline = '!min-h-0 !rounded-[8px] !border !border-[#0FA24A] !bg-white !px-[13px] !py-[7px] !text-[12px] !leading-[18px] !font-medium !text-[#0C7C3A] hover:!bg-[#F0FDF4]'
 const iconColors: Record<string, string> = { green: 'text-[#009C3B]', blue: 'text-[#0073DF]', purple: 'text-[#A04CFF]', orange: 'text-[#FF7415]', pink: 'text-[#FF4092]' }
 const tones: Record<string, string> = { green: 'bg-[#DFF6E6] text-[#0FA24A]', blue: 'bg-[#DBEAFE] text-[#2563EB]', purple: 'bg-[#F3E8FF] text-[#9333EA]', orange: 'bg-[#FFEDD5] text-[#EA580C]', pink: 'bg-[#FCE7F3] text-[#DB2777]', amber: 'bg-[#FEF3C7] text-[#D97706]' }
-const nav: { label: string; icon: DashboardIconName; path: string }[] = [
-  { label: 'Início', icon: 'home', path: '/dashboard' }, { label: 'Explorar', icon: 'search', path: '/services' },
-  { label: 'Pedidos', icon: 'clipboard', path: '/bookings' }, { label: 'Mensagens', icon: 'message', path: '/messages' },
-  { label: 'Notificações', icon: 'bell', path: '/notifications' }, { label: 'Favoritos', icon: 'heart', path: '/favorites' },
-  { label: 'Histórico', icon: 'history', path: '/history' }, { label: 'Configurações', icon: 'settings', path: '/settings' },
-]
 const categories: { title: string; match: string; icon: DashboardIconName; tone: string }[] = [
   { title: 'Reparações para Casa', match: 'repar', icon: 'wrench', tone: 'green' },
   { title: 'Limpeza e Casa', match: 'limpeza', icon: 'spray', tone: 'blue' },
@@ -198,21 +192,7 @@ onMounted(load)
 
 <template>
   <div class="grid min-h-screen grid-cols-[230px_minmax(0,1fr)] bg-white font-sans text-[14px] leading-[1.4] text-[#111827] max-[960px]:grid-cols-1 [&_svg]:block [&_svg]:shrink-0 [&_button]:transition-colors [&_a]:transition-colors [&_:focus-visible]:outline-2 [&_:focus-visible]:outline-offset-2 [&_:focus-visible]:outline-[#0FA24A]">
-    <aside class="sticky top-0 flex h-screen self-start flex-col gap-[12px] border-r border-[#E7E9EC] bg-white px-[20px] pt-[28px] pb-[20px] [@media(max-height:700px)]:py-[14px] [@media(max-height:600px)]:static [@media(max-height:600px)]:h-auto max-[960px]:static max-[960px]:h-auto max-[960px]:gap-[14px] max-[960px]:py-[16px]">
-      <RouterLink to="/dashboard" class="mb-[6px] px-[8px] text-[23px] font-bold tracking-[-.03em] text-[#111827]"><span class="text-[#0FA24A]">Link</span>Ops</RouterLink>
-      <nav aria-label="Navegação principal" class="mt-[8px] grid gap-[6px] max-[960px]:grid-cols-3 max-[480px]:grid-cols-2">
-        <RouterLink v-for="item in nav" :key="item.path" :to="item.path" class="relative flex shrink-0 items-center gap-[12px] rounded-[7px] px-[12px] py-[8px] text-[12px] leading-[18px] font-normal" :class="item.path === '/dashboard' ? 'bg-[#EDF4EF] text-[#0C7C3A]' : 'text-[#374151] hover:bg-[#F9FAFB]'">
-          <Icon :name="item.icon" class="size-[17px]" /><span class="flex-1">{{ item.label }}</span>
-          <span v-if="(item.path === '/bookings' && activeOrders.length) || (item.path === '/notifications' && unread)" class="rounded-full bg-[#DFF6E6] px-[8px] py-px text-[11.5px] font-medium text-[#0C7C3A]">{{ item.path === '/bookings' ? activeOrders.length : unread }}</span>
-        </RouterLink>
-      </nav>
-      <section class="relative mt-auto shrink-0 [@media(max-height:640px)]:hidden rounded-[10px] border border-transparent bg-linear-to-b from-[#F1F8F3] to-[#F4FAF5] p-[14px] max-[960px]:hidden">
-        <span class="absolute top-[16px] left-[14px] flex size-[18px] items-center justify-center text-[#00852F]"><Icon name="crown" class="size-[18px]" /></span>
-        <h2 class="mb-[6px] pl-[26px] text-[12px] leading-[20px] font-medium text-[#00852F]">Seja Premium</h2><p class="mb-[10px] text-[11px] leading-[17px] text-[#6B7280]">Tenha mais controlo, veja quem visitou o seu pedido e muito mais.</p>
-<div class="flex items-center justify-between gap-[12px]"><button type="button" class="!h-[30px] !min-h-0 !rounded-[5px] !bg-[#00852F] !px-[16px] !py-0 !text-[11px] !leading-[16px] !font-medium !text-white hover:!bg-[#006E27]" @click="notices.info('Os planos Premium estarão disponíveis em breve.')">Saiba mais</button><button type="button" aria-label="Saber mais sobre Premium" class="!size-[32px] !min-h-0 !rounded-full !border-0 !bg-[#DFF3E5] !p-0 !text-[#00852F] hover:!bg-[#CCEAD6]" @click="notices.info('Os planos Premium estarão disponíveis em breve.')"><Icon name="arrow-right" class="size-[16px]" /></button></div>
-        <img :src="toolboxArt" alt="" width="126" height="115" class="mx-auto mt-[12px] h-[clamp(72px,12vh,108px)] w-[118px] rounded-[10px] object-cover" />
-      </section>
-    </aside>
+    <MarketplaceSidebar :orders="activeOrders.length" :notifications="unread" />
 
     <div class="min-w-0">
       <header class="flex items-center justify-between gap-[24px] h-[76px] px-[27px] py-[18px] max-[600px]:gap-[12px] max-[600px]:px-[16px]">
