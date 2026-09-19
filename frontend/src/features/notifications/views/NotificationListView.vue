@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router'
 import AppButton from '@/app/components/common/misc/AppButton.vue'
 import NotificationCard from '@/app/components/partial/notifications/NotificationCard.vue'
 import NotificationFilters, { type NotificationFilter } from '@/app/components/partial/notifications/NotificationFilters.vue'
-import { mockNotifications } from '@/app/data/mock'
+import { notificationsApi } from '../api/notifications-api'
 import type { Notification, NotificationType } from '../types/notification'
 
 const router = useRouter()
@@ -15,6 +15,7 @@ const loading = ref(true)
 const loadingMore = ref(false)
 const error = ref('')
 const actionError = ref('')
+const page = ref(0)
 const hasMore = ref(false)
 const marking = ref(new Set<string>())
 
@@ -35,27 +36,60 @@ const filterCounts = computed<Record<NotificationFilter, number>>(() => ({
   account: notifications.value.filter(notification => accountTypes.includes(notification.type)).length,
 }))
 
+function mergeNotifications(items: Notification[]) {
+  const existing = new Set(notifications.value.map(notification => notification.id))
+  notifications.value.push(...items.filter(notification => !existing.has(notification.id)))
+}
+
 async function load() {
   loading.value = true
   error.value = ''
-  notifications.value = mockNotifications.map(notification => ({ ...notification }))
-  hasMore.value = false
-  loading.value = false
+  page.value = 0
+  try {
+    const response = await notificationsApi.list({ page: 0, size: 20, sort: 'createdAt,desc' })
+    notifications.value = response.content
+    hasMore.value = response.page.number + 1 < response.page.totalPages
+  } catch {
+    error.value = 'Não foi possível carregar as notificações.'
+    notifications.value = []
+  } finally {
+    loading.value = false
+  }
 }
 
 async function loadMore() {
   if (loadingMore.value || !hasMore.value) return
   loadingMore.value = true
   actionError.value = ''
-  loadingMore.value = false
+  try {
+    const nextPage = page.value + 1
+    const response = await notificationsApi.list({ page: nextPage, size: 20, sort: 'createdAt,desc' })
+    mergeNotifications(response.content)
+    page.value = response.page.number
+    hasMore.value = response.page.number + 1 < response.page.totalPages
+  } catch {
+    actionError.value = 'Não foi possível carregar mais notificações.'
+  } finally {
+    loadingMore.value = false
+  }
 }
 
 async function markAsRead(notification: Notification) {
   if (notification.read || marking.value.has(notification.id)) return
+  const previous = { read: notification.read, readAt: notification.readAt }
   notification.read = true
   notification.readAt = new Date().toISOString()
   marking.value.add(notification.id)
-  marking.value.delete(notification.id)
+  try {
+    const updated = await notificationsApi.markAsRead(notification.id)
+    Object.assign(notification, updated)
+  } catch {
+    notification.read = previous.read
+    notification.readAt = previous.readAt
+    actionError.value = 'Não foi possível marcar a notificação como lida.'
+  } finally {
+    marking.value.delete(notification.id)
+  }
 }
 
 async function markAllAsRead() {
@@ -67,7 +101,20 @@ async function markAllAsRead() {
     notification.readAt = new Date().toISOString()
     marking.value.add(notification.id)
   })
-  unread.forEach(notification => marking.value.delete(notification.id))
+  const results = await Promise.allSettled(unread.map(notification => notificationsApi.markAsRead(notification.id)))
+  let failed = 0
+  results.forEach((result, index) => {
+    const notification = unread[index]
+    if (!notification) return
+    marking.value.delete(notification.id)
+    if (result.status === 'fulfilled') Object.assign(notification, result.value)
+    else {
+      notification.read = false
+      notification.readAt = null
+      failed += 1
+    }
+  })
+  if (failed) actionError.value = `${failed} notificação(ões) não puderam ser marcadas como lidas.`
 }
 
 function openNotification(notification: Notification) {

@@ -51,7 +51,6 @@ export const router = createRouter({
         },
         ...([
           ['messages', 'messages', 'Mensagens', 'Conversas com prestadores e clientes.'],
-          ['favorites', 'favorites', 'Favoritos', 'Serviços e prestadores guardados.'],
           ['payments', 'payments', 'Pagamentos', 'Métodos e histórico de pagamentos.'],
           ['history', 'history', 'Histórico', 'Histórico dos seus serviços e pedidos anteriores.'],
           ['settings', 'settings', 'Configurações', 'Preferências da sua conta.'],
@@ -59,6 +58,10 @@ export const router = createRouter({
         ] as const).map(([path, name, title, description]) => ({
           path, name, component: () => import('@/app/views/ModuleView.vue'), props: { title, description }, meta: { requiresAuth: true },
         })),
+        {
+          path: 'favorites', name: 'favorites', component: () => import('@/features/services/views/FavoriteListView.vue'),
+          meta: { requiresAuth: true },
+        },
         {
           path: 'admin', name: 'admin', component: () => import('@/app/views/ModuleView.vue'),
           props: { title: 'Administração', description: 'Moderação de utilizadores, prestadores, serviços e categorias.' },
