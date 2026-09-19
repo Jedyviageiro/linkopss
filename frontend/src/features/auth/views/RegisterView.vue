@@ -133,27 +133,27 @@ async function submit() {
             </fieldset>
 
             <div class="mb-3 grid min-w-0 grid-cols-2 gap-3 max-[560px]:grid-cols-1">
-            <div class="min-w-0">
-              <label for="register-name" class="!mb-1.5 !block text-xs !font-semibold">Nome completo</label>
-              <div class="relative flex items-center">
-                <svg class="pointer-events-none absolute left-3 size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <circle cx="12" cy="8" r="3.25" stroke="currentColor" stroke-width="1.7" />
-                  <path d="M5.5 19a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
-                </svg>
-                <input id="register-name" v-model.trim="fullName" class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0" placeholder="Digite seu nome completo" autocomplete="name" required />
+              <div class="min-w-0">
+                <label for="register-name" class="!mb-1.5 !block text-xs !font-semibold">Nome completo</label>
+                <div class="relative flex items-center">
+                  <svg class="pointer-events-none absolute left-3 size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <circle cx="12" cy="8" r="3.25" stroke="currentColor" stroke-width="1.7" />
+                    <path d="M5.5 19a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+                  </svg>
+                  <input id="register-name" v-model.trim="fullName" class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0" placeholder="Digite seu nome completo" autocomplete="name" required />
+                </div>
               </div>
-            </div>
 
-            <div class="min-w-0">
-              <label for="register-email" class="!mb-1.5 !block text-xs !font-semibold">E-mail</label>
-              <div class="relative flex items-center">
-                <svg class="pointer-events-none absolute left-3 size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                  <rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7" />
-                  <path d="m4.5 7 6.2 5a2 2 0 0 0 2.6 0l6.2-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                <input id="register-email" v-model.trim="form.email" class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0" type="email" maxlength="255" placeholder="Digite seu e-mail" autocomplete="email" required />
+              <div class="min-w-0">
+                <label for="register-email" class="!mb-1.5 !block text-xs !font-semibold">E-mail</label>
+                <div class="relative flex items-center">
+                  <svg class="pointer-events-none absolute left-3 size-4 text-linkops-slate-500" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7" />
+                    <path d="m4.5 7 6.2 5a2 2 0 0 0 2.6 0l6.2-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <input id="register-email" v-model.trim="form.email" class="!h-[38px] !w-full !rounded-md !border-linkops-slate-200 !bg-white !py-0 !pr-3 !pl-[38px] text-[13px] leading-5 text-deep-navy placeholder:text-[13px] placeholder:leading-5 placeholder:text-linkops-slate-500 focus:!border-linkops-slate-200 focus:!outline-none focus:!ring-0" type="email" maxlength="255" placeholder="Digite seu e-mail" autocomplete="email" required />
+                </div>
               </div>
-            </div>
             </div>
 
             <div class="mb-3 grid min-w-0 grid-cols-2 gap-2 max-[560px]:grid-cols-1">

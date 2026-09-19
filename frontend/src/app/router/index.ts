@@ -23,7 +23,6 @@ export const router = createRouter({
         {
           path: 'services',
           name: 'services',
-          meta: { fullBleed: true },
           component: () => import('@/features/services/views/ServiceListView.vue'),
         },
         {
@@ -32,7 +31,7 @@ export const router = createRouter({
           component: () => import('@/app/views/ModuleView.vue'),
           props: { title: 'Prestadores', description: 'Descoberta e perfis públicos de prestadores.' },
         },
-        { path: 'dashboard', name: 'dashboard', component: () => import('@/app/views/DashboardView.vue'), meta: { requiresAuth: true, fullBleed: true } },
+        { path: 'dashboard', name: 'dashboard', component: () => import('@/app/views/DashboardView.vue'), meta: { requiresAuth: true } },
         {
           path: 'profile', name: 'profile', component: () => import('@/app/views/ModuleView.vue'),
           props: { title: 'Minha conta', description: 'Dados pessoais e preferências da conta.' }, meta: { requiresAuth: true },
@@ -43,8 +42,8 @@ export const router = createRouter({
           meta: { requiresAuth: true, roles: ['PROVIDER'] },
         },
         {
-          path: 'bookings', name: 'bookings', component: () => import('@/app/views/ModuleView.vue'),
-          props: { title: 'Pedidos', description: 'Histórico e gestão de pedidos de serviço.' }, meta: { requiresAuth: true },
+          path: 'bookings', name: 'bookings', component: () => import('@/features/bookings/views/BookingListView.vue'),
+          meta: { requiresAuth: true },
         },
         {
           path: 'notifications', name: 'notifications', component: () => import('@/app/views/ModuleView.vue'),

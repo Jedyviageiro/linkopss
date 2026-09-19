@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM maven:3.9.12-eclipse-temurin-21-alpine AS build
+FROM maven:3.9.12-eclipse-temurin-25-alpine AS build
 WORKDIR /workspace
 
 COPY pom.xml ./
@@ -9,7 +9,7 @@ RUN mvn -B -ntp dependency:go-offline
 COPY src ./src
 RUN mvn -B -ntp clean package -DskipTests
 
-FROM eclipse-temurin:21-jre-alpine AS runtime
+FROM eclipse-temurin:25-jre-alpine AS runtime
 WORKDIR /app
 
 RUN addgroup -S linkops && adduser -S linkops -G linkops

@@ -81,20 +81,30 @@ onBeforeUnmount(() => observer?.disconnect())
       <h2 class="m-0 text-[13px] leading-[20px] font-medium tracking-[-.01em] text-[#111827]">{{ title }}</h2>
       <div class="flex shrink-0 items-center gap-[10px]">
         <div v-if="carousel" class="flex items-center gap-[5px]">
-          <button type="button" :aria-label="`Anteriores: ${title}`" :aria-controls="trackId" :disabled="atStart"
+          <button
+            type="button" :aria-label="`Anteriores: ${title}`" :aria-controls="trackId" :disabled="atStart"
             class="!size-[28px] !min-h-0 !rounded-full !border !border-[#E7E9EC] !bg-white !p-0 !text-[#374151] hover:!bg-[#F1F8F3] disabled:!cursor-default disabled:!opacity-35"
-            @click="move(-1)"><Icon name="arrow-right" class="size-[14px] rotate-180" /></button>
-          <button type="button" :aria-label="`Seguintes: ${title}`" :aria-controls="trackId" :disabled="loadingMore || (atEnd && !hasMore)"
+            @click="move(-1)"
+          >
+            <Icon name="arrow-right" class="size-[14px] rotate-180" />
+          </button>
+          <button
+            type="button" :aria-label="`Seguintes: ${title}`" :aria-controls="trackId" :disabled="loadingMore || (atEnd && !hasMore)"
             class="!size-[28px] !min-h-0 !rounded-full !border !border-[#E7E9EC] !bg-white !p-0 !text-[#374151] hover:!bg-[#F1F8F3] disabled:!cursor-default disabled:!opacity-35"
-            @click="next"><Icon name="arrow-right" class="size-[14px]" /></button>
+            @click="next"
+          >
+            <Icon name="arrow-right" class="size-[14px]" />
+          </button>
         </div>
         <slot name="actions" />
       </div>
     </div>
-    <div :id="trackId" ref="track" :class="[layout, carousel ? 'snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0 [&>*]:snap-start' : '']"
+    <div
+      :id="trackId" ref="track" :class="[layout, carousel ? 'snap-x snap-mandatory overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden [&>*]:shrink-0 [&>*]:snap-start' : '']"
       class="min-w-0 flex-1 p-px" :tabindex="carousel ? 0 : undefined" :role="carousel ? 'group' : undefined"
       :aria-roledescription="carousel ? 'carrossel' : undefined" :aria-label="carousel ? title : undefined"
-      :aria-busy="loadingMore" @scroll.passive="measure" @keydown="onKeydown">
+      :aria-busy="loadingMore" @scroll.passive="measure" @keydown="onKeydown"
+    >
       <slot v-if="count" />
       <div v-else class="col-span-full"><slot name="empty" /></div>
     </div>

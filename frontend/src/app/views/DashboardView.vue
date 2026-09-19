@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import MarketplaceSidebar from '@/app/components/MarketplaceSidebar.vue'
 import HomeCardCollection from '@/app/components/HomeCardCollection.vue'
 import MarketplaceAvatar from '@/app/components/MarketplaceAvatar.vue'
 import Icon, { type DashboardIconName } from '@/app/components/DashboardIcon.vue'
@@ -191,12 +190,20 @@ onMounted(load)
 </script>
 
 <template>
-  <div class="grid min-h-screen grid-cols-[230px_minmax(0,1fr)] bg-white font-sans text-[14px] leading-[1.4] text-[#111827] max-[960px]:grid-cols-1 [&_svg]:block [&_svg]:shrink-0 [&_button]:transition-colors [&_a]:transition-colors [&_:focus-visible]:outline-2 [&_:focus-visible]:outline-offset-2 [&_:focus-visible]:outline-[#0FA24A]">
-    <MarketplaceSidebar :orders="activeOrders.length" :notifications="unread" />
-
+  <div>
     <div class="min-w-0">
-      <header class="flex items-center justify-between gap-[24px] h-[76px] px-[27px] py-[18px] max-[600px]:gap-[12px] max-[600px]:px-[16px]">
-        <div><button type="button" class="!min-h-0 !border-0 !bg-transparent !p-0 !text-[13px] !font-medium !text-[#6B7280]" @click="router.push({ name: 'services', query: { city: 'Maputo' } })"><Icon name="pin" class="mr-[5px] size-[14px] text-[#0FA24A]" />Maputo, Moçambique<Icon name="chevron-down" class="ml-[5px] size-[14px]" /></button></div>
+      <header v-if="false" class="flex items-center justify-between gap-[24px] h-[76px] px-[27px] py-[18px] max-[600px]:gap-[12px] max-[600px]:px-[16px]">
+        <div>
+          <button 
+            type="button" 
+            class="min-h-0 border font-medium" 
+            @click="router.push({ name: 'services', query: { city: 'Maputo' } })"
+          >
+            <Icon name="pin" class="mr-1.25 size-3.5 text-[#0FA24A]" />
+            Maputo, Moçambique
+            <Icon name="chevron-down" class="ml-1.25 size-3.5" />
+          </button>
+        </div>
         <div class="flex shrink-0 items-center gap-[18px] max-[600px]:gap-[8px]">
           <RouterLink to="/notifications" class="relative flex size-[40px] items-center justify-center rounded-[8px] text-[#111827] hover:bg-[#F1F8F3]" :aria-label="unread ? `Notificações: ${unread} por ler` : 'Notificações'"><Icon name="bell" class="size-[19px]" /><span v-if="unread" class="absolute top-0 right-0 flex size-[16px] items-center justify-center rounded-full border-2 border-[#F6F7F9] bg-[#0FA24A] text-[10px] font-medium text-white">{{ unread }}</span></RouterLink>
           <div class="relative" @keydown.esc="menuOpen = false"><button type="button" class="!min-h-0 !gap-[9px] !border-0 !bg-transparent !p-0 !text-[#111827]" :aria-expanded="menuOpen" aria-label="Menu da conta" @click="menuOpen = !menuOpen"><span class="flex size-[38px] items-center justify-center rounded-full bg-[#DFF6E6] text-[13px] text-[#0C7C3A]">{{ initials }}</span><span class="text-[13.5px] font-medium max-[600px]:hidden">{{ fullName }}</span><Icon name="chevron-down" class="size-[15px] text-[#9CA3AF]" /></button><div v-if="menuOpen" class="absolute top-[48px] right-0 z-30 w-[180px] rounded-[12px] border border-[#E7E9EC] bg-white p-[8px] shadow-lg"><RouterLink to="/profile" class="block rounded-[8px] p-[10px] text-[#374151] hover:bg-[#F3F4F6]">Minha conta</RouterLink><button type="button" class="!w-full !justify-start !border-0 !bg-white !p-[10px] !text-[#EF4444]" @click="logout">Sair</button></div></div>
@@ -214,37 +221,43 @@ onMounted(load)
 
           <section><div class="mb-[6px] flex items-center justify-between"><h2 :class="heading">Categorias</h2><button type="button" :class="textAction" @click="explore()">Ver todas</button></div><div class="grid grid-cols-5 gap-[16px] max-[960px]:grid-cols-3 max-[480px]:grid-cols-2"><button v-for="item in categories" :key="item.title" type="button" class="!flex !min-w-0 !flex-col !h-[104px] !gap-[7px] !rounded-[9px] !border !border-[#EBEEF2] !bg-white !px-[10px] !py-[12px] shadow-[0_3px_12px_rgba(16,24,40,.025)] !text-[#111827] hover:!border-[#0FA24A]" @click="categorySearch(item)"><span class="flex size-[36px] items-center justify-center [&_svg]:size-[32px]" :class="iconColors[item.tone]"><Icon :name="item.icon" class="size-[24px]" /></span><span class="max-w-[104px] text-[12px] leading-[17px] font-medium">{{ item.title }}</span></button></div></section>
 
-          <HomeCardCollection title="Serviços recomendados para si" variant="services" :count="loading ? 0 : recommendations.length"
-            :has-more="hasMoreServices" :loading-more="loadingMoreServices" @load-more="loadMoreServices">
+          <HomeCardCollection
+            title="Serviços recomendados para si" variant="services" :count="loading ? 0 : recommendations.length"
+            :has-more="hasMoreServices" :loading-more="loadingMoreServices" @load-more="loadMoreServices"
+          >
             <template #actions><button type="button" :class="textAction" @click="explore()">Ver todos</button></template>
             <template #empty>
               <p v-if="loading" class="py-[48px] text-center text-[#6B7280]" role="status">A carregar serviços…</p>
               <div v-else-if="failed" class="py-[24px] text-center"><p class="mb-[12px] text-[#6B7280]">Não conseguimos carregar os serviços.</p><button type="button" :class="outline" @click="load">Tentar novamente</button></div>
               <p v-else class="py-[24px] text-[#6B7280]">Ainda não existem serviços disponíveis nesta região.</p>
             </template>
-              <article v-for="item in recommendations" :key="item.service.id" class="flex min-h-[214px] min-w-0 flex-col overflow-hidden rounded-[10px] border border-[#EBEEF2] bg-white shadow-[0_2px_8px_rgba(16,24,40,.03)]">
-                <div class="relative aspect-[1.85] shrink-0"><img v-if="item.photo" :src="item.photo ?? undefined" :alt="item.service.title" class="absolute inset-0 size-full object-cover object-top" /><span v-else class="absolute inset-0 flex items-center justify-center bg-[#F1F8F3] text-[#0FA24A]"><Icon :name="serviceIcon(item.service)" class="size-[44px]" /></span><button type="button" class="!absolute !top-[7px] !right-[7px] !size-[27px] !min-h-0 !rounded-full !border-0 !bg-white/95 !p-0" :class="favorites.includes(item.service.id) ? '!text-[#EF4444]' : '!text-[#6B7280]'" :aria-pressed="favorites.includes(item.service.id)" aria-label="Guardar serviço nos favoritos" @click="toggleFavorite(item.service)"><Icon name="heart" class="size-[15px]" :class="{ 'fill-current': favorites.includes(item.service.id) }" /></button></div>
-                <div class="flex flex-1 flex-col gap-[6px] text-[11px] leading-[15px] p-[11px]"><button type="button" class="!h-[16px] !min-h-0 !items-start !justify-start !border-0 !bg-transparent !p-0 !text-left !text-[11px] !leading-[16px] !font-medium !text-[#111827]" @click="explore(item.service.title)" :title="item.service.title"><span class="block truncate">{{ item.service.title }}</span></button><div class="flex items-center gap-[6px] text-[10.5px] font-medium text-[#374151]"><MarketplaceAvatar :provider="item.provider" :fallback-name="item.service.providerName" class="size-[20px] text-[8px]" /><span class="min-w-0 flex-1 truncate">{{ providerLabel(item) }}</span><span class="flex shrink-0 items-center gap-[3px] font-normal text-[#6B7280]"><Icon v-if="item.provider && item.provider.averageRating > 0" name="star" class="size-[12px] fill-[#00852F] text-[#00852F]" />{{ rating(item.provider) }}</span></div><p class="m-0 flex items-center gap-[5px] text-[11px] text-[#6B7280]"><Icon name="pin" class="size-[13px] text-[#9CA3AF]" />{{ item.service.city }}</p><div class="mt-auto flex min-h-[22px] flex-wrap items-center justify-between gap-[6px] pt-[2px]"><strong class="text-[12px] font-medium text-[#00852F]">{{ price(item.service) }}</strong><span v-if="item.provider?.verified" class="flex items-center gap-[4px] rounded-[4px] bg-[#E3F4E8] px-[5px] py-[3px] text-[9px] font-medium text-[#0C7C3A]"><Icon name="shield" class="size-[14px]" />Verificado</span></div></div>
-              </article>
+            <article v-for="item in recommendations" :key="item.service.id" class="flex min-h-[214px] min-w-0 flex-col overflow-hidden rounded-[10px] border border-[#EBEEF2] bg-white shadow-[0_2px_8px_rgba(16,24,40,.03)]">
+              <div class="relative aspect-[1.85] shrink-0"><img v-if="item.photo" :src="item.photo ?? undefined" :alt="item.service.title" class="absolute inset-0 size-full object-cover object-top" /><span v-else class="absolute inset-0 flex items-center justify-center bg-[#F1F8F3] text-[#0FA24A]"><Icon :name="serviceIcon(item.service)" class="size-[44px]" /></span><button type="button" class="!absolute !top-[7px] !right-[7px] !size-[27px] !min-h-0 !rounded-full !border-0 !bg-white/95 !p-0" :class="favorites.includes(item.service.id) ? '!text-[#EF4444]' : '!text-[#6B7280]'" :aria-pressed="favorites.includes(item.service.id)" aria-label="Guardar serviço nos favoritos" @click="toggleFavorite(item.service)"><Icon name="heart" class="size-[15px]" :class="{ 'fill-current': favorites.includes(item.service.id) }" /></button></div>
+              <div class="flex flex-1 flex-col gap-[6px] text-[11px] leading-[15px] p-[11px]"><button type="button" class="!h-[16px] !min-h-0 !items-start !justify-start !border-0 !bg-transparent !p-0 !text-left !text-[11px] !leading-[16px] !font-medium !text-[#111827]" :title="item.service.title" @click="explore(item.service.title)"><span class="block truncate">{{ item.service.title }}</span></button><div class="flex items-center gap-[6px] text-[10.5px] font-medium text-[#374151]"><MarketplaceAvatar :provider="item.provider" :fallback-name="item.service.providerName" class="size-[20px] text-[8px]" /><span class="min-w-0 flex-1 truncate">{{ providerLabel(item) }}</span><span class="flex shrink-0 items-center gap-[3px] font-normal text-[#6B7280]"><Icon v-if="item.provider && item.provider.averageRating > 0" name="star" class="size-[12px] fill-[#00852F] text-[#00852F]" />{{ rating(item.provider) }}</span></div><p class="m-0 flex items-center gap-[5px] text-[11px] text-[#6B7280]"><Icon name="pin" class="size-[13px] text-[#9CA3AF]" />{{ item.service.city }}</p><div class="mt-auto flex min-h-[22px] flex-wrap items-center justify-between gap-[6px] pt-[2px]"><strong class="text-[12px] font-medium text-[#00852F]">{{ price(item.service) }}</strong><span v-if="item.provider?.verified" class="flex items-center gap-[4px] rounded-[4px] bg-[#E3F4E8] px-[5px] py-[3px] text-[9px] font-medium text-[#0C7C3A]"><Icon name="shield" class="size-[14px]" />Verificado</span></div></div>
+            </article>
           </HomeCardCollection>
 
           <div class="grid grid-cols-[minmax(0,1.42fr)_minmax(0,1fr)] items-stretch gap-[18px] max-[1100px]:grid-cols-1">
-            <HomeCardCollection title="Prestadores em destaque" variant="providers" :count="loading ? 0 : featured.length"
-              :has-more="hasMoreProviders" :loading-more="loadingMoreProviders" @load-more="loadMoreProviders">
+            <HomeCardCollection
+              title="Prestadores em destaque" variant="providers" :count="loading ? 0 : featured.length"
+              :has-more="hasMoreProviders" :loading-more="loadingMoreProviders" @load-more="loadMoreProviders"
+            >
               <template #empty>
                 <div v-if="providersFailed" class="py-[16px]"><p class="mb-[8px] text-[12px] text-[#6B7280]">Não conseguimos carregar os prestadores.</p><button type="button" :class="outline" @click="load">Tentar novamente</button></div>
                 <p v-else class="text-[12px] leading-[18px] text-[#6B7280]">{{ loading ? 'A carregar prestadores…' : 'Sem prestadores em destaque.' }}</p>
               </template>
-                <button v-for="item in featured" :key="item.provider.id" type="button"
-                  class="!flex !min-w-0 !min-h-[174px] !flex-col !items-start !justify-start !gap-0 !rounded-[9px] !border !border-[#EBEEF2] !bg-white !p-[10px] !text-left !font-sans !font-normal !text-[#111827] hover:!border-[#A8D5B5]"
-                  @click="explore(item.service?.title ?? providerLabel(item))">
-                  <MarketplaceAvatar :provider="item.provider" :fallback-name="providerLabel(item)" class="mb-[6px] size-[54px] text-[15px]" />
-                  <strong class="max-w-full truncate text-[11px] leading-[16px] font-medium">{{ providerLabel(item) }}</strong>
-                  <span class="mt-[3px] max-w-full truncate text-[10px] leading-[15px] text-[#6B7280]">{{ item.service?.categoryName ?? 'Prestador de serviços' }}</span>
-                  <span class="mt-[4px] flex items-center gap-[4px] text-[11px] leading-[16px] text-[#6B7280]"><Icon v-if="item.provider && item.provider.averageRating > 0" name="star" class="size-[12px] fill-[#00852F] text-[#00852F]" />{{ rating(item.provider) }}</span>
-                  <span class="mt-[3px] text-[10px] leading-[15px] text-[#6B7280]">{{ item.provider?.completedJobs }} trabalhos</span>
-                  <span v-if="item.provider?.verified" class="mt-[6px] inline-flex items-center gap-[3px] rounded-[4px] bg-[#E3F4E8] px-[4px] py-[2px] text-[9px] leading-[14px] font-medium text-[#0C7C3A]"><Icon name="shield" class="size-[12px]" />Verificado</span>
-                </button>
+              <button
+                v-for="item in featured" :key="item.provider.id" type="button"
+                class="!flex !min-w-0 !min-h-[174px] !flex-col !items-start !justify-start !gap-0 !rounded-[9px] !border !border-[#EBEEF2] !bg-white !p-[10px] !text-left !font-sans !font-normal !text-[#111827] hover:!border-[#A8D5B5]"
+                @click="explore(item.service?.title ?? providerLabel(item))"
+              >
+                <MarketplaceAvatar :provider="item.provider" :fallback-name="providerLabel(item)" class="mb-[6px] size-[54px] text-[15px]" />
+                <strong class="max-w-full truncate text-[11px] leading-[16px] font-medium">{{ providerLabel(item) }}</strong>
+                <span class="mt-[3px] max-w-full truncate text-[10px] leading-[15px] text-[#6B7280]">{{ item.service?.categoryName ?? 'Prestador de serviços' }}</span>
+                <span class="mt-[4px] flex items-center gap-[4px] text-[11px] leading-[16px] text-[#6B7280]"><Icon v-if="item.provider && item.provider.averageRating > 0" name="star" class="size-[12px] fill-[#00852F] text-[#00852F]" />{{ rating(item.provider) }}</span>
+                <span class="mt-[3px] text-[10px] leading-[15px] text-[#6B7280]">{{ item.provider?.completedJobs }} trabalhos</span>
+                <span v-if="item.provider?.verified" class="mt-[6px] inline-flex items-center gap-[3px] rounded-[4px] bg-[#E3F4E8] px-[4px] py-[2px] text-[9px] leading-[14px] font-medium text-[#0C7C3A]"><Icon name="shield" class="size-[12px]" />Verificado</span>
+              </button>
             </HomeCardCollection>
             <section class="flex min-w-0 flex-col">
               <div class="mb-[8px] flex items-center justify-between gap-[8px]"><h2 :class="heading">Serviços populares</h2><button type="button" :class="textAction" @click="explore()">Ver todos</button></div>

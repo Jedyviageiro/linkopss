@@ -161,7 +161,7 @@ async function completeOnboarding(skipped: boolean) {
                     <button v-for="option in interestOptions" :key="option.id" type="button" class="relative !flex !min-h-[72px] !justify-start gap-3 !rounded-lg !border !p-3 !text-left !text-deep-navy transition-colors" :class="interests.includes(option.id) ? '!border-linkops-green !bg-green-50/60' : '!border-linkops-slate-200 !bg-white hover:!border-linkops-slate-300'" :aria-pressed="interests.includes(option.id)" @click="toggleInterest(option.id)">
                       <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-white" :style="{ color: option.color }"><OnboardingIcon :name="option.icon" class="size-5" /></span>
                       <span class="pr-3 !text-[11px] leading-4 font-semibold">{{ option.label }}</span>
-                      <span v-if="interests.includes(option.id)" class="absolute top-2.5 right-2.5 flex size-[18px] items-center justify-center rounded-full bg-linkops-green text-white"><svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="m3 6 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                      <span v-if="interests.includes(option.id)" class="absolute top-2.5 right-2.5 flex size-[18px] items-center justify-center rounded-full bg-linkops-green text-white"><svg class="size-3" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="m3 6 2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg></span>
                     </button>
                   </div>
                 </div>

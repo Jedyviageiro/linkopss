@@ -101,7 +101,7 @@ button:disabled { cursor: wait; opacity: 0.65; }
 .app-header nav { display: flex; align-items: center; gap: 1.25rem; flex: 1; }
 .header-actions { display: flex; align-items: center; gap: 1rem; }
 .app-content { width: min(1180px, 90vw); margin: 0 auto; padding: 3rem 0; }
-.button-link, button {
+.button-link {
   display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem;
   padding: 0.7rem 1.1rem; border: 0; border-radius: 0.6rem; color: white;
   background: var(--color-primary); font-size: 15px; line-height: 20px; font-weight: 600;
@@ -125,8 +125,6 @@ button:disabled { cursor: wait; opacity: 0.65; }
 .auth-card h1 { margin: 0.5rem 0 0; }
 .muted { margin-top: 0; color: var(--color-muted); }
 label { display: flex; flex-direction: column; gap: 0.4rem; font-size: 14px; line-height: 20px; font-weight: 500; }
-input, select, textarea { width: 100%; padding: 0.75rem; border: 1px solid #CBD5E1; border-radius: 0.5rem; background: #FFFFFF; color: inherit; font-size: 15px; line-height: 24px; font-weight: 400; }
-input:focus, select:focus, textarea:focus { outline: none; border-color: #CBD5E1; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-grid .full { grid-column: 1 / -1; }
 .form-error { color: var(--color-danger); }

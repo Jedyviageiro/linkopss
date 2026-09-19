@@ -39,7 +39,7 @@ async function resend() {
       <section class="flex min-w-0 items-center justify-center px-9 py-9 max-[480px]:px-5">
         <div class="flex w-full max-w-[390px] flex-col items-center text-center" role="status" aria-live="polite">
           <div class="mb-7 flex size-[88px] items-center justify-center rounded-full bg-green-50 text-linkops-green" aria-hidden="true">
-            <svg class="size-10" viewBox="0 0 48 48" fill="none"><rect x="7" y="11" width="34" height="26" rx="3" stroke="currentColor" stroke-width="2.5"/><path d="m9 14 12.2 10a4.4 4.4 0 0 0 5.6 0L39 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 8v7m-3.5-3.5h7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <svg class="size-10" viewBox="0 0 48 48" fill="none"><rect x="7" y="11" width="34" height="26" rx="3" stroke="currentColor" stroke-width="2.5" /><path d="m9 14 12.2 10a4.4 4.4 0 0 0 5.6 0L39 14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M34 8v7m-3.5-3.5h7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" /></svg>
           </div>
           <h1 class="mb-3 text-h4 font-semibold tracking-[-0.01em]">Confirme seu e-mail</h1>
           <p class="m-0 max-w-[340px] text-body-small leading-6 text-linkops-slate-500">Enviamos um link de confirmação para<br /><strong class="font-medium text-linkops-slate-700">{{ email || 'o e-mail informado' }}</strong></p>
