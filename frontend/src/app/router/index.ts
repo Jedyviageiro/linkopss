@@ -46,8 +46,8 @@ export const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: 'notifications', name: 'notifications', component: () => import('@/app/views/ModuleView.vue'),
-          props: { title: 'Notificações', description: 'Atualizações dos pedidos e da conta.' }, meta: { requiresAuth: true },
+          path: 'notifications', name: 'notifications', component: () => import('@/features/notifications/views/NotificationListView.vue'),
+          meta: { requiresAuth: true },
         },
         ...([
           ['messages', 'messages', 'Mensagens', 'Conversas com prestadores e clientes.'],

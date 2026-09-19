@@ -1,4 +1,5 @@
 import type { Booking } from '@/features/bookings/types/booking'
+import type { Notification } from '@/features/notifications/types/notification'
 
 export const mockBookings: Booking[] = [
 	{
@@ -115,5 +116,68 @@ export const mockBookings: Booking[] = [
 		paymentStatusName: 'Não confirmado',
 		createdAt: '2026-09-06T08:00:00.000Z',
 		updatedAt: '2026-09-07T17:20:00.000Z',
+	},
+]
+
+export const mockNotifications: Notification[] = [
+	{
+		id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+		type: 'BOOKING_CREATED',
+		title: 'Novo pedido recebido',
+		message: 'Maria Chissano solicitou o serviço Limpeza de casas.',
+		referenceId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+		read: false,
+		readAt: null,
+		createdAt: '2026-09-19T18:49:22.838Z',
+	},
+	{
+		id: '4fa85f64-5717-4562-b3fc-2c963f66afb1',
+		type: 'BOOKING_ACCEPTED',
+		title: 'Pedido aceite',
+		message: 'Carlos Manjate aceitou o seu pedido de Reparação de canalização.',
+		referenceId: '4fa85f64-5717-4562-b3fc-2c963f66afb1',
+		read: false,
+		readAt: null,
+		createdAt: '2026-09-19T17:20:00.000Z',
+	},
+	{
+		id: '5fa85f64-5717-4562-b3fc-2c963f66afb6',
+		type: 'REVIEW_RECEIVED',
+		title: 'Nova avaliação',
+		message: 'Ana Paula avaliou o seu serviço com 5 estrelas.',
+		referenceId: '5fa85f64-5717-4562-b3fc-2c963f66afb6',
+		read: false,
+		readAt: null,
+		createdAt: '2026-09-19T16:15:00.000Z',
+	},
+	{
+		id: '6fa85f64-5717-4562-b3fc-2c963f66afc1',
+		type: 'BOOKING_COMPLETED',
+		title: 'Serviço concluído',
+		message: 'O serviço de Manutenção de jardim foi concluído.',
+		referenceId: '6fa85f64-5717-4562-b3fc-2c963f66afc1',
+		read: true,
+		readAt: '2026-09-19T14:00:00.000Z',
+		createdAt: '2026-09-19T13:45:00.000Z',
+	},
+	{
+		id: '7fa85f64-5717-4562-b3fc-2c963f66afc6',
+		type: 'PROVIDER_VERIFIED',
+		title: 'Perfil verificado',
+		message: 'O seu perfil profissional foi verificado pela LinkOps.',
+		referenceId: null,
+		read: true,
+		readAt: '2026-09-19T12:30:00.000Z',
+		createdAt: '2026-09-19T12:20:00.000Z',
+	},
+	{
+		id: '8fa85f64-5717-4562-b3fc-2c963f66afd1',
+		type: 'BOOKING_CANCELLED',
+		title: 'Pedido cancelado',
+		message: 'O pedido de Fotografia de eventos foi cancelado pelo cliente.',
+		referenceId: '7fa85f64-5717-4562-b3fc-2c963f66afc6',
+		read: true,
+		readAt: '2026-09-19T10:00:00.000Z',
+		createdAt: '2026-09-19T09:50:00.000Z',
 	},
 ]
