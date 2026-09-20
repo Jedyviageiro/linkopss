@@ -52,7 +52,6 @@ export const router = createRouter({
         ...([
           ['messages', 'messages', 'Mensagens', 'Conversas com prestadores e clientes.'],
           ['payments', 'payments', 'Pagamentos', 'Métodos e histórico de pagamentos.'],
-          ['settings', 'settings', 'Configurações', 'Preferências da sua conta.'],
           ['help', 'help', 'Ajuda', 'Respostas e apoio para usar a LinkOps.'],
         ] as const).map(([path, name, title, description]) => ({
           path, name, component: () => import('@/app/views/ModuleView.vue'), props: { title, description }, meta: { requiresAuth: true },
@@ -63,6 +62,10 @@ export const router = createRouter({
         },
         {
           path: 'history', name: 'history', component: () => import('@/features/bookings/views/HistoryView.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'settings', name: 'settings', component: () => import('@/features/users/views/SettingsView.vue'),
           meta: { requiresAuth: true },
         },
         {
