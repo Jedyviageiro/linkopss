@@ -24,7 +24,7 @@ const variantByTone = { waiting: 'warning', progress: 'info', success: 'primary'
 </script>
 
 <template>
-  <article class="group relative flex min-w-0 items-center gap-4 rounded-lg border border-linkops-slate-200 bg-white p-2 shadow-sm transition-shadow hover:shadow-md max-[700px]:items-start max-[560px]:flex-wrap">
+  <article class="group relative flex min-w-0 items-center gap-4 rounded-lg border border-linkops-slate-200 bg-white p-2 transition-colors hover:border-linkops-green max-[700px]:items-start max-[560px]:flex-wrap">
     <div class="size-23 shrink-0 overflow-hidden rounded-md bg-green-50 max-[560px]:size-20">
       <img v-if="imageUrl" :src="imageUrl" :alt="booking.serviceTitle" loading="lazy" class="size-full object-cover" />
       <span v-else class="grid size-full place-items-center text-linkops-green"><CalendarDays class="size-8" /></span>
