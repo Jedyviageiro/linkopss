@@ -1,5 +1,6 @@
 import type { Booking } from '@/features/bookings/types/booking'
 import type { Notification } from '@/features/notifications/types/notification'
+import type { ChatMessage, Conversation } from '@/features/messages/types/message'
 
 export const mockBookings: Booking[] = [
 	{
@@ -180,4 +181,26 @@ export const mockNotifications: Notification[] = [
 		readAt: '2026-09-19T10:00:00.000Z',
 		createdAt: '2026-09-19T09:50:00.000Z',
 	},
+]
+
+export const mockConversations: Conversation[] = [
+	{ id: 'conversation-carlos', participantName: 'Carlos M.', participantRole: 'Canalizador', avatar: '/images/plumber-service-demo.jpg', preview: 'Ok, estarei aí às 14h. Obrigado!', lastMessageAt: '10:24', unreadCount: 1, archived: false },
+	{ id: 'conversation-ana', participantName: 'Ana Paula', participantRole: 'Limpeza', avatar: '/images/cleaning-service-demo.jpg', preview: 'Perfeito! Qual é o endereço exato?', lastMessageAt: '09:15', unreadCount: 0, archived: false },
+	{ id: 'conversation-studio', participantName: 'Studio Luz', participantRole: 'Fotógrafo', avatar: '/images/photography-service-demo.jpg', preview: 'Vou enviar algumas amostras do meu trabalho...', lastMessageAt: 'Ontem', unreadCount: 2, archived: false },
+	{ id: 'conversation-ernesto', participantName: 'Ernesto M.', participantRole: 'Ar-condicionado', avatar: '/images/ac-service-demo.jpg', preview: 'O valor fica 2.500 MT conforme combinado.', lastMessageAt: 'Ontem', unreadCount: 0, archived: false },
+	{ id: 'conversation-beleza', participantName: 'Beleza com Rita', participantRole: 'Cabeleireira', avatar: '/images/cleaning-service-demo.jpg', preview: 'Podemos marcar para sábado?', lastMessageAt: '04 Set', unreadCount: 0, archived: false },
+	{ id: 'conversation-reparacoes', participantName: 'Reparações Express', participantRole: 'Eletrodomésticos', avatar: '/images/ac-service-demo.jpg', preview: 'Obrigado pelo contacto!', lastMessageAt: '03 Set', unreadCount: 0, archived: false },
+	{ id: 'conversation-pinta', participantName: 'Pinta Bem', participantRole: 'Pintura', avatar: '/images/plumber-service-demo.jpg', preview: 'Temos disponibilidade esta semana.', lastMessageAt: '01 Set', unreadCount: 0, archived: false },
+	{ id: 'conversation-tech', participantName: 'TechRepair', participantRole: 'Assistência técnica', avatar: '/images/ac-service-demo.jpg', preview: 'O problema já foi resolvido.', lastMessageAt: '30 Ago', unreadCount: 0, archived: true },
+]
+
+export const mockChatMessages: ChatMessage[] = [
+	{ id: 'message-1', conversationId: 'conversation-carlos', body: 'Olá, João! 👋', sentAt: '2026-09-20T10:12:00.000Z', sender: 'participant' },
+	{ id: 'message-2', conversationId: 'conversation-carlos', body: 'Vi o seu pedido para reparação da canalização. Posso ajudar. Pode me dar mais detalhes sobre o problema?', sentAt: '2026-09-20T10:12:30.000Z', sender: 'participant' },
+	{ id: 'message-3', conversationId: 'conversation-carlos', body: 'Olá, Carlos!', sentAt: '2026-09-20T10:15:00.000Z', sender: 'user' },
+	{ id: 'message-4', conversationId: 'conversation-carlos', body: 'Tenho um cano a verter na cozinha. A água não está a sair com pressão.', sentAt: '2026-09-20T10:16:00.000Z', sender: 'user' },
+	{ id: 'message-5', conversationId: 'conversation-carlos', body: 'Consegue vir hoje?', sentAt: '2026-09-20T10:16:30.000Z', sender: 'user' },
+	{ id: 'message-6', conversationId: 'conversation-carlos', body: 'Sim, consigo. Posso estar aí por volta das 14h. O valor fica 2.500 MT, inclui material básico.', sentAt: '2026-09-20T10:18:00.000Z', sender: 'participant' },
+	{ id: 'message-7', conversationId: 'conversation-carlos', body: 'Perfeito. Pode vir às 14h mesmo.', sentAt: '2026-09-20T10:21:00.000Z', sender: 'user' },
+	{ id: 'message-8', conversationId: 'conversation-carlos', body: 'Ok, estarei aí às 14h. Obrigado!', sentAt: '2026-09-20T10:24:00.000Z', sender: 'participant' },
 ]

@@ -50,7 +50,6 @@ export const router = createRouter({
           meta: { requiresAuth: true },
         },
         ...([
-          ['messages', 'messages', 'Mensagens', 'Conversas com prestadores e clientes.'],
           ['payments', 'payments', 'Pagamentos', 'Métodos e histórico de pagamentos.'],
           ['help', 'help', 'Ajuda', 'Respostas e apoio para usar a LinkOps.'],
         ] as const).map(([path, name, title, description]) => ({
@@ -66,6 +65,10 @@ export const router = createRouter({
         },
         {
           path: 'settings', name: 'settings', component: () => import('@/features/users/views/SettingsView.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'messages', name: 'messages', component: () => import('@/features/messages/views/MessagesView.vue'),
           meta: { requiresAuth: true },
         },
         {
