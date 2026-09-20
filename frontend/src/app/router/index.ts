@@ -52,7 +52,6 @@ export const router = createRouter({
         ...([
           ['messages', 'messages', 'Mensagens', 'Conversas com prestadores e clientes.'],
           ['payments', 'payments', 'Pagamentos', 'Métodos e histórico de pagamentos.'],
-          ['history', 'history', 'Histórico', 'Histórico dos seus serviços e pedidos anteriores.'],
           ['settings', 'settings', 'Configurações', 'Preferências da sua conta.'],
           ['help', 'help', 'Ajuda', 'Respostas e apoio para usar a LinkOps.'],
         ] as const).map(([path, name, title, description]) => ({
@@ -60,6 +59,10 @@ export const router = createRouter({
         })),
         {
           path: 'favorites', name: 'favorites', component: () => import('@/features/services/views/FavoriteListView.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'history', name: 'history', component: () => import('@/features/bookings/views/HistoryView.vue'),
           meta: { requiresAuth: true },
         },
         {

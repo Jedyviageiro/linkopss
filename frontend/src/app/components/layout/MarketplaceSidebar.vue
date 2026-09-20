@@ -16,7 +16,7 @@ const nav: { label: string; icon: DashboardIconName; path: string }[] = [
   { label: 'Início', icon: 'home', path: '/dashboard' }, { label: 'Explorar', icon: 'search', path: '/services' },
   { label: 'Pedidos', icon: 'clipboard', path: '/bookings' }, { label: 'Mensagens', icon: 'message', path: '/messages' },
   { label: 'Notificações', icon: 'bell', path: '/notifications' }, { label: 'Favoritos', icon: 'heart', path: '/favorites' },
-  { label: 'Pagamentos', icon: 'card', path: '/payments' }, { label: 'Configurações', icon: 'settings', path: '/settings' },
+  { label: 'Histórico', icon: 'card', path: '/history' }, { label: 'Configurações', icon: 'settings', path: '/settings' },
   { label: 'Ajuda', icon: 'help', path: '/help' },
 ]
 
