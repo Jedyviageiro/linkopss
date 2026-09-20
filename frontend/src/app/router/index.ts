@@ -23,7 +23,6 @@ export const router = createRouter({
         {
           path: 'services',
           name: 'services',
-          meta: { fullBleed: true },
           component: () => import('@/features/services/views/ServiceListView.vue'),
         },
         {
@@ -32,7 +31,7 @@ export const router = createRouter({
           component: () => import('@/app/views/ModuleView.vue'),
           props: { title: 'Prestadores', description: 'Descoberta e perfis públicos de prestadores.' },
         },
-        { path: 'dashboard', name: 'dashboard', component: () => import('@/app/views/DashboardView.vue'), meta: { requiresAuth: true, fullBleed: true } },
+        { path: 'dashboard', name: 'dashboard', component: () => import('@/app/views/DashboardView.vue'), meta: { requiresAuth: true } },
         {
           path: 'profile', name: 'profile', component: () => import('@/app/views/ModuleView.vue'),
           props: { title: 'Minha conta', description: 'Dados pessoais e preferências da conta.' }, meta: { requiresAuth: true },
@@ -43,23 +42,35 @@ export const router = createRouter({
           meta: { requiresAuth: true, roles: ['PROVIDER'] },
         },
         {
-          path: 'bookings', name: 'bookings', component: () => import('@/app/views/ModuleView.vue'),
-          props: { title: 'Pedidos', description: 'Histórico e gestão de pedidos de serviço.' }, meta: { requiresAuth: true },
+          path: 'bookings', name: 'bookings', component: () => import('@/features/bookings/views/BookingListView.vue'),
+          meta: { requiresAuth: true },
         },
         {
-          path: 'notifications', name: 'notifications', component: () => import('@/app/views/ModuleView.vue'),
-          props: { title: 'Notificações', description: 'Atualizações dos pedidos e da conta.' }, meta: { requiresAuth: true },
+          path: 'notifications', name: 'notifications', component: () => import('@/features/notifications/views/NotificationListView.vue'),
+          meta: { requiresAuth: true },
         },
         ...([
-          ['messages', 'messages', 'Mensagens', 'Conversas com prestadores e clientes.'],
-          ['favorites', 'favorites', 'Favoritos', 'Serviços e prestadores guardados.'],
           ['payments', 'payments', 'Pagamentos', 'Métodos e histórico de pagamentos.'],
-          ['history', 'history', 'Histórico', 'Histórico dos seus serviços e pedidos anteriores.'],
-          ['settings', 'settings', 'Configurações', 'Preferências da sua conta.'],
           ['help', 'help', 'Ajuda', 'Respostas e apoio para usar a LinkOps.'],
         ] as const).map(([path, name, title, description]) => ({
           path, name, component: () => import('@/app/views/ModuleView.vue'), props: { title, description }, meta: { requiresAuth: true },
         })),
+        {
+          path: 'favorites', name: 'favorites', component: () => import('@/features/services/views/FavoriteListView.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'history', name: 'history', component: () => import('@/features/bookings/views/HistoryView.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'settings', name: 'settings', component: () => import('@/features/users/views/SettingsView.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'messages', name: 'messages', component: () => import('@/features/messages/views/MessagesView.vue'),
+          meta: { requiresAuth: true },
+        },
         {
           path: 'admin', name: 'admin', component: () => import('@/app/views/ModuleView.vue'),
           props: { title: 'Administração', description: 'Moderação de utilizadores, prestadores, serviços e categorias.' },

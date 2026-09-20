@@ -37,12 +37,12 @@ onMounted(verify)
       <section class="flex min-w-0 items-center justify-center px-9 py-9 max-[480px]:px-5">
         <div class="flex w-full max-w-[390px] flex-col items-center text-center" role="status" aria-live="polite">
           <template v-if="!failed">
-            <div class="mb-7 flex size-[88px] items-center justify-center rounded-full bg-green-50 text-linkops-green"><svg class="size-9 animate-pulse" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="m8 12 2.5 2.5L16 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="mb-7 flex size-[88px] items-center justify-center rounded-full bg-green-50 text-linkops-green"><svg class="size-9 animate-pulse" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" /><path d="m8 12 2.5 2.5L16 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg></div>
             <h1 class="mb-3 text-h4 font-semibold">Confirmando seu e-mail…</h1>
             <p class="m-0 text-body-small text-linkops-slate-500">Só um momento. Estamos preparando sua conta.</p>
           </template>
           <template v-else>
-            <div class="mb-7 flex size-[88px] items-center justify-center rounded-full bg-red-50 text-red-600"><svg class="size-9" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="m9 9 6 6m0-6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+            <div class="mb-7 flex size-[88px] items-center justify-center rounded-full bg-red-50 text-red-600"><svg class="size-9" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" /><path d="m9 9 6 6m0-6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg></div>
             <h1 class="mb-3 text-h4 font-semibold">Não conseguimos confirmar</h1>
             <p class="m-0 max-w-[330px] text-body-small leading-6 text-linkops-slate-500">{{ errorMessage }}</p>
             <RouterLink to="/login" class="mt-10 text-body-small font-semibold text-linkops-green">Ir para o login</RouterLink>
